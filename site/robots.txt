@@ -1,0 +1,3 @@
+User-agent: *
+Allow: /
+Sitemap: https://wbr.maniginam.dev/sitemap.xml

@@ -1,0 +1,885 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<!-- Google tag (gtag.js) -->
+<script async src="https://www.googletagmanager.com/gtag/js?id=G-2V8XRLFG2C"></script>
+<script>window.dataLayer=window.dataLayer||[];function gtag(){dataLayer.push(arguments);}gtag('js',new Date());gtag('config','G-2V8XRLFG2C');</script>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>WBR Local - Your Guide to West Baton Rouge Parish</title>
+  <meta name="description" content="Local guides, business reviews, and community resources for West Baton Rouge Parish. Covering Port Allen, Brusly, Addis, and surrounding areas.">
+  <meta name="keywords" content="West Baton Rouge, Port Allen, Brusly, Addis, WBR Parish, local business, contractors, restaurants, services, Louisiana">
+  <meta name="robots" content="index, follow">
+  <link rel="icon" type="image/svg+xml" href="/favicon.svg">
+  <link rel="canonical" href="https://wbr.maniginam.dev/">
+
+  <!-- Open Graph -->
+  <meta property="og:type" content="website">
+  <meta property="og:title" content="WBR Local - Your Guide to West Baton Rouge Parish">
+  <meta property="og:description" content="Local guides, business reviews, and community resources for West Baton Rouge, Port Allen, Brusly, and Addis.">
+  <meta property="og:url" content="https://wbr.maniginam.dev/">
+  <meta property="og:site_name" content="WBR Local">
+
+  <!-- Twitter Card -->
+  <meta name="twitter:card" content="summary_large_image">
+  <meta name="twitter:title" content="WBR Local - Your Guide to West Baton Rouge Parish">
+  <meta name="twitter:description" content="Local guides, business reviews, and community resources for West Baton Rouge Parish.">
+
+  <!-- Fonts -->
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+
+  <link rel="stylesheet" href="style.css">
+
+  <!-- Schema.org Website Markup -->
+  <script type="application/ld+json">
+  {
+    "@context": "https://schema.org",
+    "@type": "WebSite",
+    "name": "WBR Local",
+    "url": "https://wbr.maniginam.dev",
+    "description": "Local guides, business reviews, and community resources for West Baton Rouge Parish, Louisiana.",
+    "publisher": {
+      "@type": "Organization",
+      "name": "WBR Local"
+    }
+  }
+  </script>
+</head>
+<body>
+  <header class="site-header">
+    <div class="header-inner">
+      <a href="index.html" class="site-logo">
+        <span class="logo-icon">WBR</span> WBR Local
+      </a>
+      <nav class="site-nav">
+        <a href="#services">Services & Contractors</a>
+        <a href="#living">Living in WBR</a>
+        <a href="#food">Food & Dining</a>
+        <a href="#business">Business</a>
+        <a href="#resources">Parish Resources</a>
+      </nav>
+    </div>
+  </header>
+
+  <section class="hero">
+    <div class="hero-road-layer"></div>
+    <canvas class="hero-traffic-canvas" role="img" aria-label="Animated traffic flow on Baton Rouge road network"></canvas>
+    <div class="hero-weather" id="hero-weather">
+      <div class="weather-loading">Loading weather...</div>
+    </div>
+    <div class="hero-badge">West Baton Rouge Parish &middot; Port Allen &middot; Brusly &middot; Addis</div>
+    <h1>Your Local Guide to West Baton Rouge</h1>
+    <p class="tagline">Honest reviews, helpful guides, and community resources for West Baton Rouge Parish. From the best contractors and restaurants to navigating permits and local services &mdash; written by locals, for locals.</p>
+
+    <div class="hero-dashboard">
+      <!-- Garbage Schedule -->
+      <div class="dash-card">
+        <div class="dash-icon">&#x1F5D1;</div>
+        <div class="dash-content">
+          <strong>Garbage &amp; Recycling</strong>
+          <div class="quickinfo-grid">
+            <span class="quickinfo-label">S. of Intracoastal:</span><span>Mon &amp; Thu</span>
+            <span class="quickinfo-label">N. of Intracoastal:</span><span>Tue &amp; Fri</span>
+            <span class="quickinfo-label">Recycling (all):</span><span>Wed</span>
+            <span class="quickinfo-label">Port Allen:</span><span>Fri &middot; Bulk Sat</span>
+          </div>
+          <a href="articles/wbr-garbage-recycling-schedule.html" class="quickinfo-link">Full schedule &rarr;</a>
+        </div>
+      </div>
+
+      <!-- River Level -->
+      <div class="dash-card" id="dash-river">
+        <div class="dash-icon">&#x1F30A;</div>
+        <div class="dash-content">
+          <strong>Mississippi River</strong>
+          <div class="dash-river-display">
+            <span class="river-level" id="river-level">--</span>
+            <span class="river-label">ft at Port Allen</span>
+          </div>
+          <div class="river-bar-wrap">
+            <div class="river-bar" id="river-bar"></div>
+            <span class="river-flood-mark">Flood: 35 ft</span>
+          </div>
+          <a href="articles/wbr-flood-stages-river-levels.html" class="quickinfo-link">Flood info &rarr;</a>
+        </div>
+      </div>
+
+      <!-- Burn Ban + School Status -->
+      <div class="dash-card dash-card-stacked">
+        <div class="dash-badge-row">
+          <div class="dash-badge" id="dash-burn">
+            <span class="dash-badge-icon">&#x1F525;</span>
+            <div>
+              <strong>Burn Ban</strong>
+              <span class="dash-badge-status" id="burn-status">Checking...</span>
+            </div>
+          </div>
+          <div class="dash-badge" id="dash-school">
+            <span class="dash-badge-icon">&#x1F3EB;</span>
+            <div>
+              <strong>WBR Schools</strong>
+              <span class="dash-badge-status" id="school-status">Normal Schedule</span>
+            </div>
+          </div>
+        </div>
+        <div class="dash-links-row">
+          <a href="articles/wbr-burn-ban-status.html" class="quickinfo-link">Burn rules &rarr;</a>
+          <a href="articles/wbr-school-calendar-2025-2026.html" class="quickinfo-link">School calendar &rarr;</a>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <section class="articles-section" id="services">
+    <h2 class="section-title">Services & Contractors</h2>
+    <p class="section-subtitle">Find trusted local professionals for your home and business</p>
+    <div class="article-grid">
+
+      <div class="article-card">
+        <span class="card-category">Contractors</span>
+        <h3><a href="articles/best-general-contractors-wbr-2026.html">Best General Contractors in West Baton Rouge (2026)</a></h3>
+        <p class="card-description">We reviewed licensed general contractors serving Port Allen, Brusly, and Addis. Here are the top-rated builders for new construction and renovations.</p>
+        <div class="card-meta">
+          <span>Updated Jun 2026</span>
+          <a href="articles/best-general-contractors-wbr-2026.html" class="read-link">Read Guide &rarr;</a>
+        </div>
+      </div>
+
+      <div class="article-card">
+        <span class="card-category">Home Services</span>
+        <h3><a href="articles/best-plumbers-port-allen-wbr.html">Best Plumbers in Port Allen & West Baton Rouge</a></h3>
+        <p class="card-description">Licensed, insured plumbers who actually show up. Covering emergency repair, new construction, and remodels across WBR Parish.</p>
+        <div class="card-meta">
+          <span>Updated Feb 2026</span>
+          <a href="articles/best-plumbers-port-allen-wbr.html" class="read-link">Read Guide &rarr;</a>
+        </div>
+      </div>
+
+      <div class="article-card">
+        <span class="card-category">Electrical</span>
+        <h3><a href="articles/best-electricians-wbr-parish.html">Best Electricians in West Baton Rouge Parish</a></h3>
+        <p class="card-description">Panel upgrades, new construction wiring, and emergency electrical work. The top licensed electricians serving the west side of the river.</p>
+        <div class="card-meta">
+          <span>Updated Feb 2026</span>
+          <a href="articles/best-electricians-wbr-parish.html" class="read-link">Read Guide &rarr;</a>
+        </div>
+      </div>
+
+      <div class="article-card">
+        <span class="card-category">HVAC</span>
+        <h3><a href="articles/best-hvac-companies-port-allen.html">Best HVAC Companies Near Port Allen (2026)</a></h3>
+        <p class="card-description">Louisiana heat is no joke. These are the AC companies WBR residents trust for installs, repairs, and maintenance contracts.</p>
+        <div class="card-meta">
+          <span>Updated Jun 2026</span>
+          <a href="articles/best-hvac-companies-port-allen.html" class="read-link">Read Guide &rarr;</a>
+        </div>
+      </div>
+
+      <div class="article-card">
+        <span class="card-category">Lawn & Landscape</span>
+        <h3><a href="articles/best-lawn-care-wbr.html">Best Lawn Care & Landscaping in WBR Parish</a></h3>
+        <p class="card-description">From weekly mowing to full landscape design. The most reliable lawn care services in Port Allen, Brusly, and Addis.</p>
+        <div class="card-meta">
+          <span>Updated Feb 2026</span>
+          <a href="articles/best-lawn-care-wbr.html" class="read-link">Read Guide &rarr;</a>
+        </div>
+      </div>
+
+      <div class="article-card">
+        <span class="card-category">Roofing</span>
+        <h3><a href="articles/best-roofers-west-baton-rouge.html">Best Roofers in West Baton Rouge Parish</a></h3>
+        <p class="card-description">Storm damage, re-roofs, and new construction. Licensed roofers with proven track records in WBR Parish.</p>
+        <div class="card-meta">
+          <span>Updated Feb 2026</span>
+          <a href="articles/best-roofers-west-baton-rouge.html" class="read-link">Read Guide &rarr;</a>
+        </div>
+      </div>
+
+      <div class="article-card">
+        <span class="card-category">Auto</span>
+        <h3><a href="articles/best-auto-mechanics-port-allen.html">Best Auto Mechanics in Port Allen & WBR</a></h3>
+        <p class="card-description">Trusted mechanics and auto repair shops serving West Baton Rouge Parish. Oil changes to engine rebuilds.</p>
+        <div class="card-meta">
+          <span>Updated Feb 2026</span>
+          <a href="articles/best-auto-mechanics-port-allen.html" class="read-link">Read Guide &rarr;</a>
+        </div>
+      </div>
+
+      <div class="article-card">
+        <span class="card-category">Hair & Beauty</span>
+        <h3><a href="articles/best-hair-salons-barbers-wbr.html">Best Hair Salons & Barbers in WBR</a></h3>
+        <p class="card-description">Top-rated salons and barbershops in Port Allen, Brusly, and Addis. Cuts, color, and grooming for the whole family.</p>
+        <div class="card-meta">
+          <span>Updated Jun 2026</span>
+          <a href="articles/best-hair-salons-barbers-wbr.html" class="read-link">Read Guide &rarr;</a>
+        </div>
+      </div>
+
+      <div class="article-card">
+        <span class="card-category">Veterinary</span>
+        <h3><a href="articles/best-veterinarians-wbr-parish.html">Best Veterinarians in West Baton Rouge Parish</a></h3>
+        <p class="card-description">Vets and animal clinics in WBR. Wellness exams, emergency care, and boarding for dogs, cats, and more.</p>
+        <div class="card-meta">
+          <span>Updated Apr 2026</span>
+          <a href="articles/best-veterinarians-wbr-parish.html" class="read-link">Read Guide &rarr;</a>
+        </div>
+      </div>
+
+      <div class="article-card">
+        <span class="card-category">Dental</span>
+        <h3><a href="articles/best-dentists-wbr-parish.html">Best Dentists in West Baton Rouge Parish</a></h3>
+        <p class="card-description">Family dentists, orthodontists, and emergency dental care serving Port Allen, Brusly, and surrounding areas.</p>
+        <div class="card-meta">
+          <span>Updated Apr 2026</span>
+          <a href="articles/best-dentists-wbr-parish.html" class="read-link">Read Guide &rarr;</a>
+        </div>
+      </div>
+
+    </div>
+  </section>
+
+  <section class="articles-section" id="living">
+    <h2 class="section-title">Living in West Baton Rouge</h2>
+    <p class="section-subtitle">Everything you need to know about life on the west side of the river</p>
+    <div class="article-grid">
+
+      <div class="article-card">
+        <span class="card-category">Permits</span>
+        <h3><a href="articles/how-to-get-building-permit-wbr.html">How to Get a Building Permit in West Baton Rouge Parish (2026)</a></h3>
+        <p class="card-description">Step-by-step guide to residential and commercial building permits. What you need, where to go, how much it costs, and how long it takes.</p>
+        <div class="card-meta">
+          <span>Updated Mar 2026</span>
+          <a href="articles/how-to-get-building-permit-wbr.html" class="read-link">Read Guide &rarr;</a>
+        </div>
+      </div>
+
+      <div class="article-card">
+        <span class="card-category">Moving</span>
+        <h3><a href="articles/moving-to-port-allen-guide.html">Moving to Port Allen: Everything You Need to Know</a></h3>
+        <p class="card-description">Cost of living, neighborhoods, schools, commute to Baton Rouge, utilities setup, and what newcomers wish they'd known.</p>
+        <div class="card-meta">
+          <span>Updated Mar 2026</span>
+          <a href="articles/moving-to-port-allen-guide.html" class="read-link">Read Guide &rarr;</a>
+        </div>
+      </div>
+
+      <div class="article-card">
+        <span class="card-category">Neighborhoods</span>
+        <h3><a href="articles/best-neighborhoods-wbr-parish.html">Best Neighborhoods in West Baton Rouge Parish</a></h3>
+        <p class="card-description">Port Allen, Brusly, Addis, and unincorporated areas compared. Schools, property values, flood zones, and community vibe.</p>
+        <div class="card-meta">
+          <span>Updated Mar 2026</span>
+          <a href="articles/best-neighborhoods-wbr-parish.html" class="read-link">Read Guide &rarr;</a>
+        </div>
+      </div>
+
+      <div class="article-card">
+        <span class="card-category">Flood Zones</span>
+        <h3><a href="articles/wbr-flood-zones-insurance-guide.html">WBR Flood Zones & Insurance: What Homeowners Need to Know</a></h3>
+        <p class="card-description">FEMA flood maps, insurance requirements, elevation certificates, and which areas of WBR are most and least flood-prone.</p>
+        <div class="card-meta">
+          <span>Updated May 2026</span>
+          <a href="articles/wbr-flood-zones-insurance-guide.html" class="read-link">Read Guide &rarr;</a>
+        </div>
+      </div>
+
+      <div class="article-card">
+        <span class="card-category">Utilities</span>
+        <h3><a href="articles/setting-up-utilities-wbr.html">Setting Up Utilities in West Baton Rouge Parish</a></h3>
+        <p class="card-description">Water, gas, electric, internet, trash pickup &mdash; who to call, what it costs, and the quirks nobody tells you about.</p>
+        <div class="card-meta">
+          <span>Updated May 2026</span>
+          <a href="articles/setting-up-utilities-wbr.html" class="read-link">Read Guide &rarr;</a>
+        </div>
+      </div>
+
+      <div class="article-card">
+        <span class="card-category">Schools</span>
+        <h3><a href="articles/wbr-schools-guide-2026.html">West Baton Rouge Schools: A Parent's Guide (2026)</a></h3>
+        <p class="card-description">School ratings, the new Career Academy, sports programs, and how WBR schools compare to EBR and Ascension.</p>
+        <div class="card-meta">
+          <span>Updated May 2026</span>
+          <a href="articles/wbr-schools-guide-2026.html" class="read-link">Read Guide &rarr;</a>
+        </div>
+      </div>
+
+      <div class="article-card">
+        <span class="card-category">Moving</span>
+        <h3><a href="articles/moving-from-baton-rouge-to-port-allen.html">Moving from Baton Rouge to Port Allen</a></h3>
+        <p class="card-description">Why families are crossing the bridge. Lower cost of living, less traffic, smaller schools, and the commute isn't bad at all.</p>
+        <div class="card-meta">
+          <span>Updated May 2026</span>
+          <a href="articles/moving-from-baton-rouge-to-port-allen.html" class="read-link">Read Guide &rarr;</a>
+        </div>
+      </div>
+
+      <div class="article-card">
+        <span class="card-category">Childcare</span>
+        <h3><a href="articles/best-daycares-wbr-parish.html">Best Daycares in West Baton Rouge Parish</a></h3>
+        <p class="card-description">Licensed daycare centers and preschools in Port Allen, Brusly, and Addis. Ratings, hours, and what parents say.</p>
+        <div class="card-meta">
+          <span>Updated Mar 2026</span>
+          <a href="articles/best-daycares-wbr-parish.html" class="read-link">Read Guide &rarr;</a>
+        </div>
+      </div>
+
+      <div class="article-card">
+        <span class="card-category">Summer Camps</span>
+        <h3><a href="articles/summer-camps-wbr-parish-2026.html">Summer Camps in WBR Parish (2026)</a></h3>
+        <p class="card-description">Day camps, sports camps, VBS, and summer programs for kids in West Baton Rouge. Dates, costs, and registration info.</p>
+        <div class="card-meta">
+          <span>Updated Apr 2026</span>
+          <a href="articles/summer-camps-wbr-parish-2026.html" class="read-link">Read Guide &rarr;</a>
+        </div>
+      </div>
+
+      <div class="article-card">
+        <span class="card-category">Schools</span>
+        <h3><a href="articles/wbr-school-district-guide.html">WBR School District Guide</a></h3>
+        <p class="card-description">Zone maps, enrollment, school choice, and everything parents need to know about the WBR school system.</p>
+        <div class="card-meta">
+          <span>Updated Apr 2026</span>
+          <a href="articles/wbr-school-district-guide.html" class="read-link">Read Guide &rarr;</a>
+        </div>
+      </div>
+
+      <div class="article-card">
+        <span class="card-category">Internet</span>
+        <h3><a href="articles/wbr-internet-providers-guide.html">Internet Providers in West Baton Rouge</a></h3>
+        <p class="card-description">Cox, AT&T, T-Mobile, and Starlink compared. Speeds, pricing, and coverage by area in WBR Parish.</p>
+        <div class="card-meta">
+          <span>Updated Apr 2026</span>
+          <a href="articles/wbr-internet-providers-guide.html" class="read-link">Read Guide &rarr;</a>
+        </div>
+      </div>
+
+      <div class="article-card">
+        <span class="card-category">Churches</span>
+        <h3><a href="articles/best-churches-wbr-parish.html">Best Churches in West Baton Rouge Parish</a></h3>
+        <p class="card-description">Catholic, Baptist, Methodist, and nondenominational churches in Port Allen, Brusly, and Addis.</p>
+        <div class="card-meta">
+          <span>Updated Mar 2026</span>
+          <a href="articles/best-churches-wbr-parish.html" class="read-link">Read Guide &rarr;</a>
+        </div>
+      </div>
+
+      <div class="article-card">
+        <span class="card-category">Outdoors</span>
+        <h3><a href="articles/best-fishing-spots-wbr.html">Best Fishing Spots in West Baton Rouge</a></h3>
+        <p class="card-description">Where to fish in WBR. Mississippi River, Bayou Grosse Tete, Intracoastal, and local ponds and spillways.</p>
+        <div class="card-meta">
+          <span>Updated Apr 2026</span>
+          <a href="articles/best-fishing-spots-wbr.html" class="read-link">Read Guide &rarr;</a>
+        </div>
+      </div>
+
+      <div class="article-card">
+        <span class="card-category">Parks</span>
+        <h3><a href="articles/best-parks-playgrounds-wbr.html">Best Parks & Playgrounds in WBR</a></h3>
+        <p class="card-description">Playgrounds, splash pads, sports fields, and walking trails in Port Allen, Brusly, and Addis.</p>
+        <div class="card-meta">
+          <span>Updated Apr 2026</span>
+          <a href="articles/best-parks-playgrounds-wbr.html" class="read-link">Read Guide &rarr;</a>
+        </div>
+      </div>
+
+      <div class="article-card">
+        <span class="card-category">Solar</span>
+        <h3><a href="articles/solar-panels-wbr-parish-guide.html">Solar Panels in WBR: Complete Guide</a></h3>
+        <p class="card-description">Is solar worth it in West Baton Rouge? Costs, savings, tax credits, and local installers.</p>
+        <div class="card-meta">
+          <span>Updated Mar 2026</span>
+          <a href="articles/solar-panels-wbr-parish-guide.html" class="read-link">Read Guide &rarr;</a>
+        </div>
+      </div>
+
+      <div class="article-card">
+        <span class="card-category">Permits</span>
+        <h3><a href="articles/solar-panel-permits-wbr.html">Solar Panel Permits in WBR</a></h3>
+        <p class="card-description">Permitting process for residential solar installations in West Baton Rouge Parish.</p>
+        <div class="card-meta">
+          <span>Updated Mar 2026</span>
+          <a href="articles/solar-panel-permits-wbr.html" class="read-link">Read Guide &rarr;</a>
+        </div>
+      </div>
+
+      <div class="article-card">
+        <span class="card-category">Generators</span>
+        <h3><a href="articles/generators-wbr-parish-guide.html">Home Generators in WBR: Complete Guide</a></h3>
+        <p class="card-description">Standby vs portable generators. Sizing, costs, installation, and what WBR homeowners need for hurricane season.</p>
+        <div class="card-meta">
+          <span>Updated May 2026</span>
+          <a href="articles/generators-wbr-parish-guide.html" class="read-link">Read Guide &rarr;</a>
+        </div>
+      </div>
+
+      <div class="article-card">
+        <span class="card-category">Permits</span>
+        <h3><a href="articles/generator-permits-wbr.html">Generator Permits in WBR</a></h3>
+        <p class="card-description">Do you need a permit for a generator in WBR? Electrical permits, gas line requirements, and noise rules.</p>
+        <div class="card-meta">
+          <span>Updated Feb 2026</span>
+          <a href="articles/generator-permits-wbr.html" class="read-link">Read Guide &rarr;</a>
+        </div>
+      </div>
+
+      <div class="article-card">
+        <span class="card-category">Sports</span>
+        <h3><a href="articles/wbr-youth-sports-leagues.html">Youth Sports Leagues in WBR</a></h3>
+        <p class="card-description">Soccer, baseball, football, basketball, and cheer programs for kids in West Baton Rouge Parish.</p>
+        <div class="card-meta">
+          <span>Updated Apr 2026</span>
+          <a href="articles/wbr-youth-sports-leagues.html" class="read-link">Read Guide &rarr;</a>
+        </div>
+      </div>
+
+    </div>
+  </section>
+
+  <section class="articles-section" id="food">
+    <h2 class="section-title">Food & Dining</h2>
+    <p class="section-subtitle">The best places to eat on the west side of the river</p>
+    <div class="article-grid">
+
+      <div class="article-card">
+        <span class="card-category">Restaurants</span>
+        <h3><a href="articles/best-restaurants-port-allen.html">Best Restaurants in Port Allen & West Baton Rouge</a></h3>
+        <p class="card-description">From plate lunches to fine dining. The restaurants that locals love, including a few hidden gems most people drive right past.</p>
+        <div class="card-meta">
+          <span>Updated Apr 2026</span>
+          <a href="articles/best-restaurants-port-allen.html" class="read-link">Read Guide &rarr;</a>
+        </div>
+      </div>
+
+      <div class="article-card">
+        <span class="card-category">Cajun Food</span>
+        <h3><a href="articles/best-cajun-food-wbr.html">Best Cajun Food in West Baton Rouge Parish</a></h3>
+        <p class="card-description">Boudin, cracklins, crawfish, gumbo &mdash; where to find the most authentic Cajun food without crossing the bridge.</p>
+        <div class="card-meta">
+          <span>Updated Apr 2026</span>
+          <a href="articles/best-cajun-food-wbr.html" class="read-link">Read Guide &rarr;</a>
+        </div>
+      </div>
+
+      <div class="article-card">
+        <span class="card-category">Coffee & Cafes</span>
+        <h3><a href="articles/best-coffee-shops-wbr.html">Best Coffee Shops in West Baton Rouge</a></h3>
+        <p class="card-description">Where to get your morning fix, grab a workspace, or meet a friend. Coffee spots in Port Allen, Brusly, and Addis.</p>
+        <div class="card-meta">
+          <span>Updated Jun 2026</span>
+          <a href="articles/best-coffee-shops-wbr.html" class="read-link">Read Guide &rarr;</a>
+        </div>
+      </div>
+
+    </div>
+  </section>
+
+  <section class="articles-section" id="business">
+    <h2 class="section-title">Business & Economy</h2>
+    <p class="section-subtitle">Starting and running a business in West Baton Rouge Parish</p>
+    <div class="article-grid">
+
+      <div class="article-card">
+        <span class="card-category">Starting a Business</span>
+        <h3><a href="articles/starting-business-wbr-parish.html">How to Start a Business in West Baton Rouge Parish</a></h3>
+        <p class="card-description">LLC registration, occupational licenses, sales tax, zoning, and everything else you need to open your doors in WBR.</p>
+        <div class="card-meta">
+          <span>Updated May 2026</span>
+          <a href="articles/starting-business-wbr-parish.html" class="read-link">Read Guide &rarr;</a>
+        </div>
+      </div>
+
+      <div class="article-card">
+        <span class="card-category">Economic Development</span>
+        <h3><a href="articles/wbr-economic-boom-2026.html">WBR's Economic Boom: What's Coming in 2026-2030</a></h3>
+        <p class="card-description">Shintech expansion, Gron Fuels, LA 1/415 Connector, and 1,000+ new jobs. How West Baton Rouge is transforming.</p>
+        <div class="card-meta">
+          <span>Updated May 2026</span>
+          <a href="articles/wbr-economic-boom-2026.html" class="read-link">Read Guide &rarr;</a>
+        </div>
+      </div>
+
+      <div class="article-card">
+        <span class="card-category">Contractor Registration</span>
+        <h3><a href="articles/contractor-registration-wbr.html">Contractor Registration in West Baton Rouge: Complete Guide</a></h3>
+        <p class="card-description">How to register as a contractor in WBR Parish. State license requirements, parish registration, fees, and renewal process.</p>
+        <div class="card-meta">
+          <span>Updated May 2026</span>
+          <a href="articles/contractor-registration-wbr.html" class="read-link">Read Guide &rarr;</a>
+        </div>
+      </div>
+
+    </div>
+  </section>
+
+  <section class="articles-section" id="resources">
+    <h2 class="section-title">Parish Resources</h2>
+    <p class="section-subtitle">Essential community information, schedules, and contacts for WBR Parish</p>
+    <div class="article-grid">
+
+      <div class="article-card">
+        <span class="card-category">Trash &amp; Recycling</span>
+        <h3><a href="articles/wbr-garbage-recycling-schedule.html">Garbage &amp; Recycling Collection Guide</a></h3>
+        <p class="card-description">Waste Pro pickup days, Port Allen city collection, bulk pickup schedule by area, and how to report missed pickups via SeeClickFix.</p>
+        <div class="card-meta">
+          <span>Updated Apr 2026</span>
+          <a href="articles/wbr-garbage-recycling-schedule.html" class="read-link">Read Guide &rarr;</a>
+        </div>
+      </div>
+
+      <div class="article-card">
+        <span class="card-category">Schools</span>
+        <h3><a href="articles/wbr-school-calendar-2025-2026.html">WBR School Calendar 2025-2026</a></h3>
+        <p class="card-description">Key dates for the school year including holidays, breaks, nine-week endings, Fair Day, and graduation dates for PAHS and BHS.</p>
+        <div class="card-meta">
+          <span>Updated Jun 2026</span>
+          <a href="articles/wbr-school-calendar-2025-2026.html" class="read-link">Read Guide &rarr;</a>
+        </div>
+      </div>
+
+      <div class="article-card">
+        <span class="card-category">Fire Safety</span>
+        <h3><a href="articles/wbr-burn-ban-status.html">Burn Ban Status &amp; Outdoor Burning Rules</a></h3>
+        <p class="card-description">How to check if a burn ban is active, who issues burn bans, what you can legally burn, and what is always illegal to burn in WBR.</p>
+        <div class="card-meta">
+          <span>Updated Jun 2026</span>
+          <a href="articles/wbr-burn-ban-status.html" class="read-link">Read Guide &rarr;</a>
+        </div>
+      </div>
+
+      <div class="article-card">
+        <span class="card-category">Water Safety</span>
+        <h3><a href="articles/wbr-water-boil-advisories.html">Water Boil Advisory Guide</a></h3>
+        <p class="card-description">Who issues boil advisories, where to check for active alerts, what to do during an advisory, and WBR water provider contacts.</p>
+        <div class="card-meta">
+          <span>Updated Apr 2026</span>
+          <a href="articles/wbr-water-boil-advisories.html" class="read-link">Read Guide &rarr;</a>
+        </div>
+      </div>
+
+      <div class="article-card">
+        <span class="card-category">Government</span>
+        <h3><a href="articles/wbr-parish-council-meetings.html">Parish Council &amp; Government Meeting Schedule</a></h3>
+        <p class="card-description">Meeting times and locations for WBR Parish Council, Planning &amp; Zoning, School Board, Port Allen, Addis, and Brusly councils.</p>
+        <div class="card-meta">
+          <span>Updated Apr 2026</span>
+          <a href="articles/wbr-parish-council-meetings.html" class="read-link">Read Guide &rarr;</a>
+        </div>
+      </div>
+
+      <div class="article-card">
+        <span class="card-category">Flood Info</span>
+        <h3><a href="articles/wbr-flood-stages-river-levels.html">Mississippi River Flood Stages &amp; River Levels</a></h3>
+        <p class="card-description">Port Allen Lock gauge (BTRL1), flood stage levels, historic crests, and where to check current Mississippi River levels.</p>
+        <div class="card-meta">
+          <span>Updated Apr 2026</span>
+          <a href="articles/wbr-flood-stages-river-levels.html" class="read-link">Read Guide &rarr;</a>
+        </div>
+      </div>
+
+      <div class="article-card">
+        <span class="card-category">Events</span>
+        <h3><a href="articles/wbr-events-calendar-2026.html">WBR Events &amp; Festivals Calendar 2026</a></h3>
+        <p class="card-description">Mardi Gras parades, Kite Fest Louisiane, Fourth Fest, SugarFest, Jingle Jeepin', and other local events and festivals.</p>
+        <div class="card-meta">
+          <span>Updated Jun 2026</span>
+          <a href="articles/wbr-events-calendar-2026.html" class="read-link">Read Guide &rarr;</a>
+        </div>
+      </div>
+
+      <div class="article-card">
+        <span class="card-category">Emergency</span>
+        <h3><a href="articles/wbr-emergency-contacts.html">Emergency &amp; Utility Contacts</a></h3>
+        <p class="card-description">All essential phone numbers: 911, Sheriff, Police, Emergency Management, utilities, Entergy, FEMA, Red Cross, and key parish websites.</p>
+        <div class="card-meta">
+          <span>Updated Feb 2026</span>
+          <a href="articles/wbr-emergency-contacts.html" class="read-link">Read Guide &rarr;</a>
+        </div>
+      </div>
+
+      <div class="article-card">
+        <span class="card-category">Library</span>
+        <h3><a href="articles/wbr-parish-library-guide.html">WBR Parish Library Guide</a></h3>
+        <p class="card-description">Hours, locations, programs, and services at the West Baton Rouge Parish Library. Free WiFi, kids programs, and more.</p>
+        <div class="card-meta">
+          <span>Updated May 2026</span>
+          <a href="articles/wbr-parish-library-guide.html" class="read-link">Read Guide &rarr;</a>
+        </div>
+      </div>
+
+      <div class="article-card">
+        <span class="card-category">Taxes</span>
+        <h3><a href="articles/wbr-parish-tax-assessor-guide.html">WBR Parish Tax Assessor Guide</a></h3>
+        <p class="card-description">Property tax rates, homestead exemption, assessment appeals, and how to look up your property value online.</p>
+        <div class="card-meta">
+          <span>Updated Mar 2026</span>
+          <a href="articles/wbr-parish-tax-assessor-guide.html" class="read-link">Read Guide &rarr;</a>
+        </div>
+      </div>
+
+      <div class="article-card">
+        <span class="card-category">Traffic</span>
+        <h3><a href="articles/live-traffic-cameras-wbr.html">Live Traffic Cameras in WBR</a></h3>
+        <p class="card-description">Check the I-10 bridge, Hwy 190, and Hwy 1 cameras before you leave. Live feeds and traffic conditions.</p>
+        <div class="card-meta">
+          <span>Updated Mar 2026</span>
+          <a href="articles/live-traffic-cameras-wbr.html" class="read-link">Read Guide &rarr;</a>
+        </div>
+      </div>
+
+      <div class="article-card">
+        <span class="card-category">Local Market</span>
+        <h3><a href="articles/port-allen-farmers-market-guide.html">Port Allen Farmers Market Guide</a></h3>
+        <p class="card-description">When, where, and what to expect at the Port Allen farmers market. Seasonal produce, local vendors, and prepared foods.</p>
+        <div class="card-meta">
+          <span>Updated Apr 2026</span>
+          <a href="articles/port-allen-farmers-market-guide.html" class="read-link">Read Guide &rarr;</a>
+        </div>
+      </div>
+
+      <div class="article-card">
+        <span class="card-category">History</span>
+        <h3><a href="articles/03-wbr-museum-sugar-heritage.html">WBR Museum & Sugar Heritage</a></h3>
+        <p class="card-description">The West Baton Rouge Museum tells the story of sugar, Cajun culture, and river life on the west bank.</p>
+        <div class="card-meta">
+          <span>Updated Apr 2026</span>
+          <a href="articles/03-wbr-museum-sugar-heritage.html" class="read-link">Read Guide &rarr;</a>
+        </div>
+      </div>
+
+    </div>
+  </section>
+
+  <footer class="site-footer">
+    <div class="footer-inner">
+      <div class="footer-links">
+        <a href="index.html">Home</a>
+        <a href="#services">Services</a>
+        <a href="#living">Living in WBR</a>
+        <a href="#food">Food & Dining</a>
+        <a href="#business">Business</a>
+        <a href="#resources">Parish Resources</a>
+      </div>
+      <p>&copy; 2026 WBR Local. Your guide to West Baton Rouge Parish, Louisiana.</p>
+      <p>Covering Port Allen, Brusly, Addis, Rosedale, and Grosse Tete.</p>
+      <p class="ai-disclaimer">Some content may be AI-assisted. All information is verified for accuracy.</p>
+    </div>
+  </footer>
+
+  <script src="email-capture.js"></script>
+
+  <!-- River Level (USGS API - Baton Rouge gauge 07374000) -->
+  <script>
+  (function() {
+    var url = 'https://waterservices.usgs.gov/nwis/iv/?sites=07374000&parameterCd=00065&format=json';
+    fetch(url).then(function(r){return r.json();}).then(function(data){
+      var ts = data.value.timeSeries;
+      if (ts && ts.length > 0) {
+        var val = parseFloat(ts[0].values[0].value[0].value);
+        var el = document.getElementById('river-level');
+        var bar = document.getElementById('river-bar');
+        el.textContent = val.toFixed(1);
+        var pct = Math.min((val / 35) * 100, 100);
+        bar.style.width = pct + '%';
+        if (val >= 35) {
+          bar.style.background = '#ef4444';
+          el.style.color = '#ef4444';
+        } else if (val >= 25) {
+          bar.style.background = '#f59e0b';
+          el.style.color = '#f59e0b';
+        } else {
+          bar.style.background = '#22c55e';
+          el.style.color = '#22c55e';
+        }
+      }
+    }).catch(function(){
+      document.getElementById('river-level').textContent = '--';
+    });
+  })();
+  </script>
+
+  <!-- Burn Ban Status (default safe, update manually or via scrape) -->
+  <script>
+  (function() {
+    // TODO: Automate via LDAF scrape. For now, default to "No Active Ban"
+    // Set window.WBR_BURN_BAN = true on the page to activate
+    var active = window.WBR_BURN_BAN || false;
+    var el = document.getElementById('burn-status');
+    var badge = document.getElementById('dash-burn');
+    if (active) {
+      el.textContent = 'ACTIVE';
+      el.style.color = '#ef4444';
+      badge.classList.add('dash-badge-alert');
+    } else {
+      el.textContent = 'No Active Ban';
+      el.style.color = '#22c55e';
+    }
+  })();
+  </script>
+
+  <!-- Weather Widget -->
+  <script>
+  (function() {
+    var lat = 30.4524, lon = -91.2101;
+    var url = 'https://api.open-meteo.com/v1/forecast?latitude=' + lat + '&longitude=' + lon + '&current=temperature_2m,weather_code,wind_speed_10m,relative_humidity_2m&temperature_unit=fahrenheit&wind_speed_unit=mph&timezone=America%2FChicago';
+    var weatherCodes = {
+      0:{icon:'\u2600\uFE0F',desc:'Clear'},1:{icon:'\uD83C\uDF24',desc:'Mostly Clear'},2:{icon:'\u26C5',desc:'Partly Cloudy'},3:{icon:'\u2601\uFE0F',desc:'Overcast'},
+      45:{icon:'\uD83C\uDF2B',desc:'Foggy'},48:{icon:'\uD83C\uDF2B',desc:'Fog'},
+      51:{icon:'\uD83C\uDF26',desc:'Light Drizzle'},53:{icon:'\uD83C\uDF26',desc:'Drizzle'},55:{icon:'\uD83C\uDF27',desc:'Heavy Drizzle'},
+      61:{icon:'\uD83C\uDF27',desc:'Light Rain'},63:{icon:'\uD83C\uDF27',desc:'Rain'},65:{icon:'\uD83C\uDF27',desc:'Heavy Rain'},
+      80:{icon:'\uD83C\uDF26',desc:'Light Showers'},81:{icon:'\uD83C\uDF27',desc:'Showers'},82:{icon:'\u26C8',desc:'Heavy Showers'},
+      95:{icon:'\u26C8',desc:'Thunderstorm'},96:{icon:'\u26C8',desc:'T-Storm + Hail'},99:{icon:'\u26C8',desc:'Severe T-Storm'}
+    };
+    fetch(url).then(function(r){return r.json();}).then(function(data){
+      var c=data.current;var w=weatherCodes[c.weather_code]||{icon:'\uD83C\uDF21',desc:'N/A'};
+      var el=document.getElementById('hero-weather');
+      el.innerHTML='<div class="weather-icon">'+w.icon+'</div>'+
+        '<div class="weather-info">'+
+        '<span class="weather-temp">'+Math.round(c.temperature_2m)+'\u00B0F</span>'+
+        '<span class="weather-desc">'+w.desc+'</span>'+
+        '<span class="weather-detail">Wind '+Math.round(c.wind_speed_10m)+' mph \u00B7 Humidity '+Math.round(c.relative_humidity_2m)+'%</span>'+
+        '</div>';
+    }).catch(function(){document.getElementById('hero-weather').style.display='none';});
+  })();
+  </script>
+
+  <!-- Traffic Map Backdrop -->
+  <script src="js/roads.js"></script>
+  <script src="js/traffic.js"></script>
+  <script>
+  (function() {
+    var roadLayer = document.querySelector('.hero-road-layer');
+    var trafficCanvas = document.querySelector('.hero-traffic-canvas');
+    if (roadLayer && trafficCanvas) {
+      HeroRoads.buildSVG(roadLayer);
+      HeroTraffic.init(trafficCanvas);
+      function animate() { HeroTraffic.draw(); requestAnimationFrame(animate); }
+      animate();
+      window.addEventListener('resize', function() { HeroTraffic.resize(); });
+    }
+  })();
+  </script>
+
+  <div class="cam-modal-overlay" id="cam-modal" onclick="closeCamModal(event)">
+    <div class="cam-modal">
+      <button class="cam-modal-close" onclick="closeCamModal()">&times;</button>
+      <video id="cam-modal-video" muted playsinline></video>
+      <div class="cam-modal-label" id="cam-modal-label"></div>
+    </div>
+  </div>
+
+  <!-- Traffic Camera Hotspots -->
+  <script src="https://cdn.jsdelivr.net/npm/hls.js@1.5.13/dist/hls.min.js"></script>
+  <script>
+  (function() {
+    var BASE = 'https://ITSStreamingBR.dotd.la.gov/public/';
+    var CAMS = [
+      { stream: 'br-cam-015', label: 'I-10 at LA 1 (Port Allen)',  mx: 0.178, my: 0.55 },
+      { stream: 'br-cam-016', label: 'I-10 at LA 415 (Bridge)',  mx: 0.333, my: 0.516 },
+      { stream: 'br-cam-014', label: 'I-10 at Nicholson Dr',     mx: 0.361, my: 0.494 },
+      { stream: 'br-cam-013', label: 'I-10 / I-110 Interchange', mx: 0.444, my: 0.48 },
+      { stream: 'br-cam-006', label: 'I-10 at Bluebonnet',       mx: 0.600, my: 0.472 },
+      { stream: 'br-cam-007', label: 'I-10 at Essen Ln',         mx: 0.644, my: 0.474 },
+      { stream: 'br-cam-005', label: 'I-10 at Siegen Ln',        mx: 0.683, my: 0.486 }
+    ];
+    var activeHls = {};
+    var modalHls = null;
+
+    function buildHotspots() {
+      var hero = document.querySelector('.hero');
+      if (!hero) return;
+      var layer = document.createElement('div');
+      layer.className = 'cam-hotspots';
+      hero.appendChild(layer);
+
+      CAMS.forEach(function(cam, i) {
+        var dot = document.createElement('div');
+        dot.className = 'cam-dot';
+        dot.style.left = (cam.mx * 100) + '%';
+        dot.style.top = (cam.my * 100) + '%';
+
+        var popup = document.createElement('div');
+        popup.className = 'cam-popup';
+        popup.innerHTML = '<video id="hcam-' + i + '" muted playsinline></video>' +
+          '<div class="cam-popup-label">' + cam.label +
+          ' <span class="cam-popup-hint">Click to enlarge</span></div>';
+
+        dot.appendChild(popup);
+        layer.appendChild(dot);
+
+        dot.addEventListener('mouseenter', function() { startStream(cam, i); });
+        dot.addEventListener('mouseleave', function() { stopStream(i); });
+        dot.addEventListener('click', function() { openModal(cam); });
+      });
+    }
+
+    function startStream(cam, i) {
+      var el = document.getElementById('hcam-' + i);
+      if (!el || activeHls[i]) return;
+      var url = BASE + cam.stream + '.streams/playlist.m3u8';
+      if (typeof Hls !== 'undefined' && Hls.isSupported()) {
+        var hls = new Hls({ enableWorker: true, lowLatencyMode: true, maxBufferLength: 4 });
+        hls.loadSource(url);
+        hls.attachMedia(el);
+        hls.on(Hls.Events.MANIFEST_PARSED, function() { el.play().catch(function(){}); });
+        activeHls[i] = hls;
+      } else if (el.canPlayType && el.canPlayType('application/vnd.apple.mpegurl')) {
+        el.src = url;
+        el.play().catch(function(){});
+        activeHls[i] = 'native';
+      }
+    }
+
+    function stopStream(i) {
+      if (activeHls[i] && activeHls[i] !== 'native') { activeHls[i].destroy(); }
+      var el = document.getElementById('hcam-' + i);
+      if (el) el.src = '';
+      delete activeHls[i];
+    }
+
+    function openModal(cam) {
+      var modal = document.getElementById('cam-modal');
+      var video = document.getElementById('cam-modal-video');
+      var label = document.getElementById('cam-modal-label');
+      label.textContent = cam.label;
+      modal.classList.add('open');
+      document.body.style.overflow = 'hidden';
+
+      var url = BASE + cam.stream + '.streams/playlist.m3u8';
+      if (typeof Hls !== 'undefined' && Hls.isSupported()) {
+        if (modalHls) modalHls.destroy();
+        modalHls = new Hls({ enableWorker: true, lowLatencyMode: true });
+        modalHls.loadSource(url);
+        modalHls.attachMedia(video);
+        modalHls.on(Hls.Events.MANIFEST_PARSED, function() { video.play().catch(function(){}); });
+      } else if (video.canPlayType && video.canPlayType('application/vnd.apple.mpegurl')) {
+        video.src = url;
+        video.play().catch(function(){});
+      }
+    }
+
+    window.closeCamModal = function(e) {
+      if (e && e.target !== e.currentTarget && !e.target.classList.contains('cam-modal-close')) return;
+      var modal = document.getElementById('cam-modal');
+      var video = document.getElementById('cam-modal-video');
+      modal.classList.remove('open');
+      document.body.style.overflow = '';
+      if (modalHls) { modalHls.destroy(); modalHls = null; }
+      video.src = '';
+    };
+
+    document.addEventListener('keydown', function(e) {
+      if (e.key === 'Escape') window.closeCamModal();
+    });
+
+    if (document.readyState === 'loading') {
+      document.addEventListener('DOMContentLoaded', buildHotspots);
+    } else {
+      buildHotspots();
+    }
+  })();
+  </script>
+</body>
+</html>
