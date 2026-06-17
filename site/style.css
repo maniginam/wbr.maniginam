@@ -1245,6 +1245,16 @@ img {
   position: relative;
 }
 
+/* Spam honeypot — hidden from humans, tempting to bots */
+.email-capture-hp {
+  position: absolute;
+  left: -9999px;
+  width: 1px;
+  height: 1px;
+  opacity: 0;
+  pointer-events: none;
+}
+
 .email-capture-inline {
   background: linear-gradient(135deg, #dbeafe 0%, #bfdbfe 50%, #93c5fd 100%);
   border: 2px solid #3b82f6;

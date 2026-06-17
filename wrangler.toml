@@ -1,0 +1,12 @@
+name = "wbr-maniginam"
+compatibility_date = "2026-06-01"
+pages_build_output_dir = "site"
+
+# D1 binding for store-only email capture.
+# DISABLED until the database is provisioned — an unresolved id breaks deploy,
+# and /api/subscribe returns 503 (the form falls back to localStorage) until then.
+# To enable: `wrangler d1 create wbr-subscribers`, paste the id below, uncomment.
+# [[d1_databases]]
+# binding = "DB"
+# database_name = "wbr-subscribers"
+# database_id = "REPLACE_WITH_DATABASE_ID"

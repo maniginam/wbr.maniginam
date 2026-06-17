@@ -10,7 +10,7 @@
     popupDelay: 30000,
     scrollThreshold: 0.5,
     storageKey: 'wbr_local_email_capture',
-    endpoint: '#email-signup'
+    endpoint: '/api/subscribe'
   };
 
   function hasDismissed(type) {
@@ -57,6 +57,7 @@
       '<h3 class="email-capture-title">' + CONFIG.leadMagnet + '</h3>' +
       '<p class="email-capture-desc">' + CONFIG.ctaText + '</p>' +
       '<form class="email-capture-form" action="' + CONFIG.endpoint + '" method="POST">' +
+        '<input type="text" name="company" class="email-capture-hp" tabindex="-1" autocomplete="off" aria-hidden="true">' +
         '<div class="email-capture-fields">' +
           '<input type="text" name="name" placeholder="First name" required class="email-capture-input">' +
           '<input type="email" name="email" placeholder="Email address" required class="email-capture-input">' +
@@ -115,7 +116,25 @@
       e.preventDefault();
       var name = form.querySelector('input[name="name"]').value.trim();
       var email = form.querySelector('input[name="email"]').value.trim();
+      var company = form.querySelector('input[name="company"]'); // honeypot
       if (!name || !email) return;
+
+      // Honeypot: a real user never fills this. If it's filled, skip the backend
+      // entirely (show the same success UI so a bot learns nothing).
+      var isBot = company && company.value;
+
+      // Persist to the backend (best-effort). UX never blocks on the network:
+      // success shows immediately; a backend failure falls back to localStorage.
+      if (!isBot) {
+        try {
+          fetch(CONFIG.endpoint, {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify({ name: name, email: email, company: '', source: CONFIG.leadMagnet })
+          }).catch(function() {});
+        } catch (err) {}
+      }
+
       storeSubmission(name, email);
       form.style.display = 'none';
       success.style.display = 'block';
