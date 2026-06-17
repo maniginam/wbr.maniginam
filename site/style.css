@@ -386,6 +386,78 @@ img {
 .weather-desc { font-size: 12px; font-weight: 500; color: rgba(255,255,255,0.8); }
 .weather-detail { font-size: 10px; color: rgba(255,255,255,0.5); }
 
+/* Hazard alerts (NWS) */
+.hero-alert-banner {
+  display: none;
+  position: relative;
+  z-index: 7;
+  padding: 10px 44px 10px 18px;
+  font-family: var(--font-sans);
+  font-size: 13px;
+  font-weight: 600;
+  color: #fff;
+  background: #b91c1c;
+  border-bottom: 1px solid rgba(0,0,0,0.2);
+}
+.hero-alert-banner.is-active { display: block; }
+.hero-alert-banner a { color: #fff; text-decoration: underline; }
+.hero-alert-banner .alert-banner-close {
+  position: absolute;
+  top: 50%; right: 14px;
+  transform: translateY(-50%);
+  background: none; border: none; color: #fff;
+  font-size: 20px; line-height: 1; cursor: pointer; opacity: 0.85;
+}
+.hero-alert-banner .alert-banner-close:hover { opacity: 1; }
+
+.hero-alerts {
+  position: absolute;
+  top: 16px; left: 16px;
+  z-index: 4;
+  display: flex;
+  flex-direction: column;
+  align-items: flex-start;
+  gap: 6px;
+  max-width: 300px;
+}
+.alert-pill {
+  display: inline-flex;
+  align-items: center;
+  gap: 7px;
+  padding: 7px 12px;
+  border-radius: 999px;
+  font-family: var(--font-sans);
+  font-size: 12px;
+  font-weight: 600;
+  color: #fff;
+  cursor: pointer;
+  backdrop-filter: blur(8px);
+  -webkit-backdrop-filter: blur(8px);
+  border: 1px solid rgba(255,255,255,0.18);
+  box-shadow: 0 2px 10px rgba(0,0,0,0.25);
+  transition: transform 0.15s;
+}
+.alert-pill:hover { transform: translateY(-1px); }
+.alert-pill .alert-dot { width: 8px; height: 8px; border-radius: 50%; background: #fff; }
+.alert-pill.sev-high { background: rgba(185,28,28,0.85); }
+.alert-pill.sev-mod  { background: rgba(194,120,3,0.85); }
+.alert-pill.sev-low  { background: rgba(120,113,40,0.78); }
+.alert-detail {
+  display: none;
+  margin-top: 4px;
+  max-width: 300px;
+  padding: 10px 12px;
+  border-radius: 10px;
+  font-size: 11px;
+  font-weight: 400;
+  line-height: 1.5;
+  color: rgba(255,255,255,0.92);
+  background: rgba(0,0,0,0.55);
+  backdrop-filter: blur(8px);
+  -webkit-backdrop-filter: blur(8px);
+}
+.alert-detail.is-open { display: block; }
+
 /* Hero Dashboard */
 .hero-dashboard {
   position: relative;

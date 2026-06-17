@@ -1,58 +1,130 @@
 // js/hero/roads.js
-// Road network SVG data for East/West Baton Rouge Parish
-// ViewBox: 900x500 (stylized, not geographically accurate)
+// Geographic road network for the West Baton Rouge / Baton Rouge hero map.
+// Source data is real [lon, lat]. A single projection maps it into the
+// 900x500 viewBox so roads, camera dots, and traffic particles all share
+// one coordinate space — dots stay locked to roads AND land in
+// geographically-correct positions.
 
 window.HeroRoads = (function () {
-  var ROADS = [
-    { id: 'rd-i10', label: 'I-10 E/W', d: 'M 0 260 Q 200 250, 400 240 Q 550 235, 700 250 Q 800 258, 900 265', type: 'interstate', stroke: '#b388ff', width: 2.5, opacity: 0.6, labelOffset: '15%', fontSize: 9, fontWeight: 600, letterSpacing: 3, traffic: 'mixed', count: 25 },
-    { id: 'rd-i12', label: 'I-12 E', d: 'M 480 240 Q 550 180, 650 140 Q 750 110, 900 90', type: 'interstate', stroke: '#b388ff', width: 2, opacity: 0.5, labelOffset: '35%', fontSize: 8, fontWeight: 600, letterSpacing: 2, traffic: 'flowing', count: 15 },
-    { id: 'rd-i110', label: 'I-110 N/S', d: 'M 400 240 Q 395 180, 390 120 Q 388 80, 385 20', type: 'interstate', stroke: '#b388ff', width: 2, opacity: 0.5, labelOffset: '30%', fontSize: 8, fontWeight: 600, letterSpacing: 2, traffic: 'moderate', count: 12 },
-    { id: 'rd-airline', label: 'Airline Hwy N/S', d: 'M 300 400 Q 370 320, 410 250 Q 450 190, 500 120', type: 'local', stroke: '#9e9e9e', width: 1.2, opacity: 0.4, labelOffset: '20%', fontSize: 7, fontWeight: 400, letterSpacing: 1.5, traffic: 'moderate', count: 10 },
-    { id: 'rd-florida', label: 'Florida Blvd E/W', d: 'M 200 230 Q 350 225, 500 220 Q 650 218, 780 215', type: 'local', stroke: '#9e9e9e', width: 1.2, opacity: 0.4, labelOffset: '25%', fontSize: 7, fontWeight: 400, letterSpacing: 1.5, traffic: 'congested', count: 14 },
-    { id: 'rd-perkins', label: 'Perkins Rd E/W', d: 'M 350 300 Q 500 290, 650 285 Q 750 280, 850 278', type: 'local', stroke: '#9e9e9e', width: 1, opacity: 0.3, labelOffset: '20%', fontSize: 6.5, fontWeight: 400, letterSpacing: 1, traffic: 'flowing', count: 8 },
-    { id: 'rd-siegen', label: 'Siegen Ln N/S', d: 'M 600 180 Q 610 250, 620 320 Q 628 380, 635 460', type: 'local', stroke: '#9e9e9e', width: 1, opacity: 0.3, labelOffset: '15%', fontSize: 6.5, fontWeight: 400, letterSpacing: 1, traffic: 'flowing', count: 7 },
-    { id: 'rd-nicholson', label: 'Nicholson Dr N/S', d: 'M 320 240 Q 335 310, 350 380 Q 360 430, 370 500', type: 'local', stroke: '#9e9e9e', width: 1, opacity: 0.3, labelOffset: '15%', fontSize: 6.5, fontWeight: 400, letterSpacing: 1, traffic: 'moderate', count: 7 },
-    { id: 'rd-coursey', label: 'Coursey Blvd E/W', d: 'M 350 170 Q 500 165, 650 160 Q 750 158, 850 155', type: 'local', stroke: '#9e9e9e', width: 1, opacity: 0.3, labelOffset: '20%', fontSize: 6.5, fontWeight: 400, letterSpacing: 1, traffic: 'flowing', count: 8 },
-    { id: 'rd-westbr', label: 'Port Allen', d: 'M 0 300 Q 80 290, 160 275 Q 220 265, 280 280', type: 'local', stroke: '#9e9e9e', width: 1.2, opacity: 0.3, labelOffset: '15%', fontSize: 7, fontWeight: 400, letterSpacing: 1.5, traffic: 'flowing', count: 6 },
-    { id: 'rd-bridge', label: 'Huey Long E/W', d: 'M 280 280 Q 320 260, 400 240', type: 'bridge', stroke: '#9e9e9e', width: 1.5, opacity: 0.4, labelOffset: '5%', fontSize: 6, fontWeight: 400, letterSpacing: 2, labelFill: 'rgba(255,204,2,0.4)', traffic: 'congested', count: 8 }
+  // Projection bounding box, sized to a 900:500 (1.8) aspect with a
+  // longitude cos(lat) correction so shapes are not skewed.
+  var LON0 = -91.30, LON1 = -90.85;          // west .. east
+  var LAT0 = 30.342, LAT1 = 30.558;          // south .. north
+  var VW = 900, VH = 500;
+
+  function project(lon, lat) {
+    return {
+      x: ((lon - LON0) / (LON1 - LON0)) * VW,
+      y: ((LAT1 - lat) / (LAT1 - LAT0)) * VH   // north = top
+    };
+  }
+
+  function projectPts(geo) {
+    return geo.map(function (p) { var q = project(p[0], p[1]); return [q.x, q.y]; });
+  }
+
+  // Real-world waypoints (lon, lat). Interstates carry the camera dots;
+  // Airline/Florida + the river add recognizable BR context.
+  var ROAD_DATA = [
+    { id: 'rd-i10', label: 'I-10 E/W', type: 'interstate', stroke: '#b388ff', width: 2.5, opacity: 0.6, labelOffset: '12%', fontSize: 9, fontWeight: 600, letterSpacing: 3, traffic: 'mixed', count: 25,
+      geo: [[-91.263,30.452],[-91.224,30.452],[-91.205,30.447],[-91.190,30.443],[-91.180,30.447],[-91.165,30.433],[-91.155,30.427],[-91.133,30.420],[-91.103,30.406],[-91.083,30.394],[-91.052,30.383],[-91.020,30.379],[-90.992,30.360]] },
+    { id: 'rd-i12', label: 'I-12 E', type: 'interstate', stroke: '#b388ff', width: 2, opacity: 0.5, labelOffset: '45%', fontSize: 8, fontWeight: 600, letterSpacing: 2, traffic: 'flowing', count: 15,
+      geo: [[-91.020,30.379],[-90.998,30.405],[-90.978,30.418],[-90.955,30.430],[-90.925,30.445],[-90.885,30.460],[-90.860,30.468]] },
+    { id: 'rd-i110', label: 'I-110 N/S', type: 'interstate', stroke: '#b388ff', width: 2, opacity: 0.5, labelOffset: '40%', fontSize: 8, fontWeight: 600, letterSpacing: 2, traffic: 'moderate', count: 12,
+      geo: [[-91.180,30.447],[-91.183,30.480],[-91.182,30.515],[-91.180,30.550]] },
+    { id: 'rd-airline', label: 'Airline Hwy', type: 'local', stroke: '#9e9e9e', width: 1.2, opacity: 0.4, labelOffset: '30%', fontSize: 7, fontWeight: 400, letterSpacing: 1.5, traffic: 'moderate', count: 10,
+      geo: [[-91.160,30.520],[-91.120,30.470],[-91.080,30.430],[-91.040,30.395],[-91.010,30.385]] },
+    { id: 'rd-florida', label: 'Florida Blvd E/W', type: 'local', stroke: '#9e9e9e', width: 1.2, opacity: 0.4, labelOffset: '35%', fontSize: 7, fontWeight: 400, letterSpacing: 1.5, traffic: 'congested', count: 14,
+      geo: [[-91.180,30.452],[-91.120,30.450],[-91.040,30.448],[-90.960,30.446]] }
   ];
 
-  // Non-labeled paths (Mississippi River, connecting roads)
-  var EXTRAS = [
-    { d: 'M 150 500 Q 200 400, 260 310 Q 300 250, 330 180 Q 350 130, 360 20', stroke: 'rgba(255,204,2,0.3)', width: 3, opacity: 0.3, dasharray: '8 6' },
-    { d: 'M 100 200 Q 150 240, 200 270 Q 240 280, 280 280', stroke: '#9e9e9e', width: 1, opacity: 0.25 }
+  // Mississippi River, drawn but unlabeled.
+  var EXTRA_DATA = [
+    { stroke: 'rgba(255,204,2,0.3)', width: 3, opacity: 0.3, dasharray: '8 6',
+      geo: [[-91.210,30.558],[-91.195,30.520],[-91.205,30.488],[-91.190,30.458],[-91.200,30.440],[-91.235,30.408],[-91.212,30.372],[-91.200,30.342]] }
   ];
 
-  // Area labels
-  var AREAS = [
-    { text: 'WEST BR', x: 100, y: 340, fontSize: 10, fill: '#9e9e9e', opacity: 0.2, letterSpacing: 3, fontWeight: 300 },
-    { text: 'EAST BR', x: 500, y: 310, fontSize: 10, fill: '#9e9e9e', opacity: 0.2, letterSpacing: 3, fontWeight: 300 },
-    { text: 'MISSISSIPPI', x: 220, y: 200, fontSize: 8, fill: 'rgba(255,204,2,0.15)', letterSpacing: 6, fontWeight: 300 }
+  // Area labels at real positions.
+  var AREA_DATA = [
+    { text: 'WEST BR', lon: -91.255, lat: 30.430, fontSize: 10, fill: '#9e9e9e', opacity: 0.2, letterSpacing: 3, fontWeight: 300 },
+    { text: 'BATON ROUGE', lon: -91.090, lat: 30.425, fontSize: 10, fill: '#9e9e9e', opacity: 0.2, letterSpacing: 3, fontWeight: 300 },
+    { text: 'MISSISSIPPI', lon: -91.245, lat: 30.470, fontSize: 8, fill: 'rgba(255,204,2,0.15)', letterSpacing: 6, fontWeight: 300 }
   ];
 
-  // Control points for traffic particle interpolation (same paths as SVG but as arrays)
-  var TRAFFIC_PATHS = [
-    { points: [[0,260],[200,250],[400,240],[550,235],[700,250],[900,265]], traffic: 'mixed', weight: 2.5, count: 25 },
-    { points: [[480,240],[550,180],[650,140],[750,110],[900,90]], traffic: 'flowing', weight: 2, count: 15 },
-    { points: [[400,240],[395,180],[390,120],[388,80],[385,20]], traffic: 'moderate', weight: 2, count: 12 },
-    { points: [[300,400],[370,320],[410,250],[450,190],[500,120]], traffic: 'moderate', weight: 1.5, count: 10 },
-    { points: [[200,230],[350,225],[500,220],[650,218],[780,215]], traffic: 'congested', weight: 1.5, count: 14 },
-    { points: [[350,300],[500,290],[650,285],[850,278]], traffic: 'flowing', weight: 1, count: 8 },
-    { points: [[600,180],[610,250],[620,320],[635,460]], traffic: 'flowing', weight: 1, count: 7 },
-    { points: [[320,240],[335,310],[350,380],[370,500]], traffic: 'moderate', weight: 1, count: 7 },
-    { points: [[350,170],[500,165],[650,160],[850,155]], traffic: 'flowing', weight: 1, count: 8 },
-    { points: [[0,300],[80,290],[160,275],[220,265],[280,280]], traffic: 'flowing', weight: 1, count: 6 },
-    { points: [[280,280],[320,260],[400,240]], traffic: 'congested', weight: 1.5, count: 8 }
+  // Camera definitions at real interchange [lon, lat]; exposed projected.
+  var CAMERA_DATA = [
+    { cam: 'I-10 at LA 1',          stream: 'br-cam-015', desc: 'Port Allen / Brusly exit', lon: -91.224, lat: 30.452 },
+    { cam: 'I-10 at LA 415',        stream: 'br-cam-016', desc: 'Port Allen connector',     lon: -91.263, lat: 30.452 },
+    { cam: 'I-10 at Nicholson Dr',  stream: 'br-cam-014', desc: 'Near LSU',                 lon: -91.186, lat: 30.434 },
+    { cam: 'I-10 at I-110',         stream: 'br-cam-013', desc: 'Downtown BR interchange',  lon: -91.180, lat: 30.447 },
+    { cam: 'I-10 at Washington St', stream: 'br-cam-012', desc: 'Capitol area',             lon: -91.165, lat: 30.433 },
+    { cam: 'I-10 at Acadian Thwy',  stream: 'br-cam-010', desc: 'Mid-city Baton Rouge',     lon: -91.155, lat: 30.427 },
+    { cam: 'I-10 at College Dr',    stream: 'br-cam-008', desc: 'Mall of Louisiana area',   lon: -91.133, lat: 30.420 },
+    { cam: 'I-10 at Essen Ln',      stream: 'br-cam-007', desc: 'Medical corridor',         lon: -91.103, lat: 30.406 },
+    { cam: 'I-10 at Bluebonnet',    stream: 'br-cam-006', desc: 'Towne Center area',        lon: -91.083, lat: 30.394 },
+    { cam: 'I-10 at Siegen Ln',     stream: 'br-cam-005', desc: 'SE Baton Rouge',           lon: -91.052, lat: 30.383 },
+    { cam: 'I-12 at I-10 Split',    stream: 'br-cam-025', desc: 'I-10/I-12 interchange',    lon: -91.020, lat: 30.379 },
+    { cam: 'I-12 at Airline Hwy',   stream: 'br-cam-026', desc: 'Airline Hwy exit',         lon: -90.998, lat: 30.405 },
+    { cam: 'I-12 at Jefferson Hwy', stream: 'br-cam-027', desc: 'Jefferson Hwy area',       lon: -90.978, lat: 30.418 },
+    { cam: 'I-12 at Sherwood Forest', stream: 'br-cam-028', desc: 'Sherwood Forest exit',   lon: -90.955, lat: 30.430 },
+    { cam: 'I-12 at O\'Neal Ln',    stream: 'br-cam-029', desc: 'O\'Neal Ln exit',          lon: -90.925, lat: 30.445 },
+    { cam: 'I-12 at Denham Springs', stream: 'br-cam-030', desc: 'Toward Denham Springs',   lon: -90.885, lat: 30.460 }
   ];
+
+  // Catmull-Rom spline through points -> smooth SVG cubic path.
+  function smoothPath(pts) {
+    if (pts.length < 2) return '';
+    var d = 'M ' + r2(pts[0][0]) + ' ' + r2(pts[0][1]);
+    for (var i = 0; i < pts.length - 1; i++) {
+      var p0 = pts[i - 1] || pts[i];
+      var p1 = pts[i];
+      var p2 = pts[i + 1];
+      var p3 = pts[i + 2] || pts[i + 1];
+      var c1x = p1[0] + (p2[0] - p0[0]) / 6;
+      var c1y = p1[1] + (p2[1] - p0[1]) / 6;
+      var c2x = p2[0] - (p3[0] - p1[0]) / 6;
+      var c2y = p2[1] - (p3[1] - p1[1]) / 6;
+      d += ' C ' + r2(c1x) + ' ' + r2(c1y) + ', ' + r2(c2x) + ' ' + r2(c2y) + ', ' + r2(p2[0]) + ' ' + r2(p2[1]);
+    }
+    return d;
+  }
+
+  function r2(n) { return Math.round(n * 100) / 100; }
+
+  // Projected, render-ready structures.
+  var ROADS = ROAD_DATA.map(function (r) {
+    return { id: r.id, label: r.label, type: r.type, stroke: r.stroke, width: r.width,
+             opacity: r.opacity, labelOffset: r.labelOffset, fontSize: r.fontSize,
+             fontWeight: r.fontWeight, letterSpacing: r.letterSpacing, labelFill: r.labelFill,
+             d: smoothPath(projectPts(r.geo)) };
+  });
+
+  var EXTRAS = EXTRA_DATA.map(function (e) {
+    return { stroke: e.stroke, width: e.width, opacity: e.opacity, dasharray: e.dasharray, d: smoothPath(projectPts(e.geo)) };
+  });
+
+  var AREAS = AREA_DATA.map(function (a) {
+    var q = project(a.lon, a.lat);
+    return { text: a.text, x: q.x, y: q.y, fontSize: a.fontSize, fill: a.fill, opacity: a.opacity, letterSpacing: a.letterSpacing, fontWeight: a.fontWeight };
+  });
+
+  var CAMERAS = CAMERA_DATA.map(function (c) {
+    var q = project(c.lon, c.lat);
+    return { cam: c.cam, stream: c.stream, desc: c.desc, x: q.x, y: q.y };
+  });
+
+  // Traffic particle paths reuse the projected road waypoints.
+  var TRAFFIC_PATHS = ROAD_DATA.map(function (r) {
+    return { points: projectPts(r.geo), traffic: r.traffic, weight: r.width, count: r.count };
+  });
 
   var SVG_NS = 'http://www.w3.org/2000/svg';
 
   function buildSVG(container) {
     var svg = document.createElementNS(SVG_NS, 'svg');
-    svg.setAttribute('viewBox', '0 0 900 500');
+    svg.setAttribute('viewBox', '0 0 ' + VW + ' ' + VH);
     svg.setAttribute('preserveAspectRatio', 'none');
 
-    // Road paths
     ROADS.forEach(function (r) {
       var path = document.createElementNS(SVG_NS, 'path');
       path.id = r.id;
@@ -64,7 +136,6 @@ window.HeroRoads = (function () {
       svg.appendChild(path);
     });
 
-    // Extra paths (river, connectors)
     EXTRAS.forEach(function (e) {
       var path = document.createElementNS(SVG_NS, 'path');
       path.setAttribute('d', e.d);
@@ -76,13 +147,12 @@ window.HeroRoads = (function () {
       svg.appendChild(path);
     });
 
-    // Road labels
     ROADS.forEach(function (r) {
       var text = document.createElementNS(SVG_NS, 'text');
       text.setAttribute('font-family', 'Inter');
       text.setAttribute('font-size', r.fontSize);
       text.setAttribute('fill', r.labelFill || r.stroke);
-      text.setAttribute('opacity', r.type === 'interstate' ? 0.55 : (r.type === 'bridge' ? 1 : 0.4));
+      text.setAttribute('opacity', r.type === 'interstate' ? 0.55 : 0.4);
       if (r.fontWeight) text.setAttribute('font-weight', r.fontWeight);
       text.setAttribute('letter-spacing', r.letterSpacing);
       var tp = document.createElementNS(SVG_NS, 'textPath');
@@ -93,7 +163,6 @@ window.HeroRoads = (function () {
       svg.appendChild(text);
     });
 
-    // Area labels
     AREAS.forEach(function (a) {
       var text = document.createElementNS(SVG_NS, 'text');
       text.setAttribute('x', a.x);
@@ -112,7 +181,9 @@ window.HeroRoads = (function () {
   }
 
   return {
+    project: project,
     ROADS: ROADS,
+    CAMERAS: CAMERAS,
     TRAFFIC_PATHS: TRAFFIC_PATHS,
     buildSVG: buildSVG
   };

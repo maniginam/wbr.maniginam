@@ -102,6 +102,7 @@
   </header>
 
   <section class="hero">
+    <div class="hero-alert-banner" id="hero-alert-banner" role="alert"></div>
     <div class="hero-road-layer"></div>
     <canvas class="hero-traffic-canvas" role="img" aria-label="Animated traffic flow on Baton Rouge road network"></canvas>
     <!-- Traffic Camera Hotspots (positioned by JS from road path data) -->
@@ -127,6 +128,7 @@
     <div class="hero-weather" id="hero-weather">
       <div class="weather-loading">Loading weather...</div>
     </div>
+    <div class="hero-alerts" id="hero-alerts" aria-live="polite"></div>
     <div class="hero-badge">West Baton Rouge Parish &middot; Port Allen &middot; Brusly &middot; Addis</div>
     <h1>Your Local Guide to West Baton Rouge</h1>
     <p class="tagline">Honest reviews, helpful guides, and community resources for West Baton Rouge Parish. From the best contractors and restaurants to navigating permits and local services &mdash; written by locals, for locals.</p>
@@ -855,33 +857,97 @@
   })();
   </script>
 
+  <!-- Hazard Alerts (NWS active alerts for WBR Parish) -->
+  <script>
+  (function() {
+    // West Baton Rouge Parish point (Port Allen). NWS alerts: free, no key, CORS-enabled.
+    var URL = 'https://api.weather.gov/alerts/active?point=30.4524,-91.2101';
+    var SEV_RANK = { Extreme: 4, Severe: 3, Moderate: 2, Minor: 1, Unknown: 0 };
+    var box = document.getElementById('hero-alerts');
+    var banner = document.getElementById('hero-alert-banner');
+
+    function sevClass(s) {
+      if (s === 'Extreme' || s === 'Severe') return 'sev-high';
+      if (s === 'Moderate') return 'sev-mod';
+      return 'sev-low';
+    }
+
+    // A banner is an interruption — reserve it for an actual threat:
+    // a real Warning, or an imminent (Immediate/Expected) Severe/Extreme event.
+    // Watches and advisories stay as a quiet pill only.
+    function isThreat(a) {
+      if (/warning/i.test(a.event || '')) return true;
+      var bad = a.severity === 'Extreme' || a.severity === 'Severe';
+      var imminent = a.urgency === 'Immediate' || a.urgency === 'Expected';
+      return bad && imminent;
+    }
+
+    function render(alerts) {
+      // One pill per alert; tap to expand its detail. Text is set via
+      // textContent / text nodes — never innerHTML — so NWS strings can't inject markup.
+      alerts.forEach(function(a) {
+        var pill = document.createElement('div');
+        pill.className = 'alert-pill ' + sevClass(a.severity);
+        var dot = document.createElement('span');
+        dot.className = 'alert-dot';
+        pill.appendChild(dot);
+        pill.appendChild(document.createTextNode(a.event || 'Alert'));
+
+        var detail = document.createElement('div');
+        detail.className = 'alert-detail';
+        detail.textContent = a.headline || a.event || '';
+
+        pill.addEventListener('click', function() { detail.classList.toggle('is-open'); });
+        box.appendChild(pill);
+        box.appendChild(detail);
+      });
+
+      // Only a genuine threat drives the dismissible top banner.
+      var threat = alerts.filter(isThreat)[0];
+      if (threat) {
+        banner.textContent = '⚠ ' + (threat.headline || threat.event || 'Active alert');
+        var close = document.createElement('button');
+        close.className = 'alert-banner-close';
+        close.setAttribute('aria-label', 'Dismiss');
+        close.textContent = '×';
+        close.addEventListener('click', function() { banner.classList.remove('is-active'); });
+        banner.appendChild(close);
+        banner.classList.add('is-active');
+      }
+    }
+
+    fetch(URL, { headers: { 'Accept': 'application/geo+json' } })
+      .then(function(r) { return r.ok ? r.json() : null; })
+      .then(function(data) {
+        if (!data || !data.features || !data.features.length) return;
+        // Dedupe by event, keep the most severe instance, sort loudest-first.
+        var byEvent = {};
+        data.features.forEach(function(f) {
+          var p = f.properties;
+          var cur = byEvent[p.event];
+          if (!cur || (SEV_RANK[p.severity] || 0) > (SEV_RANK[cur.severity] || 0)) byEvent[p.event] = p;
+        });
+        var alerts = Object.keys(byEvent).map(function(k) { return byEvent[k]; });
+        alerts.sort(function(a, b) { return (SEV_RANK[b.severity] || 0) - (SEV_RANK[a.severity] || 0); });
+        render(alerts);
+      })
+      .catch(function() { /* alerts are best-effort; stay silent on failure */ });
+  })();
+  </script>
+
   <!-- HLS.js for live camera streams -->
   <script src="https://cdn.jsdelivr.net/npm/hls.js@1.5.13/dist/hls.min.js"></script>
+
+  <!-- Map geometry (roads, projected camera coords, traffic paths) -->
+  <script src="js/roads.js"></script>
 
   <!-- Traffic Camera Hotspot Interaction -->
   <script>
   (function() {
     var BASE = 'https://ITSStreamingBR.dotd.la.gov/public/';
 
-    // Camera definitions with SVG coordinates on the I-10 path (viewBox 900x500)
-    var CAMERAS = [
-      { cam: 'I-10 at LA 1',         stream: 'br-cam-015', desc: 'Port Allen / Brusly exit',  svgX: 140, svgY: 253 },
-      { cam: 'I-10 at LA 415',       stream: 'br-cam-016', desc: 'Port Allen connector',      svgX: 200, svgY: 250 },
-      { cam: 'I-10 at Nicholson Dr',  stream: 'br-cam-014', desc: 'Near LSU',                 svgX: 350, svgY: 243 },
-      { cam: 'I-10 at I-110',        stream: 'br-cam-013', desc: 'Downtown BR interchange',   svgX: 400, svgY: 240 },
-      { cam: 'I-10 at Washington St', stream: 'br-cam-012', desc: 'Capitol area',             svgX: 440, svgY: 239 },
-      { cam: 'I-10 at Acadian Thwy',  stream: 'br-cam-010', desc: 'Mid-city Baton Rouge',    svgX: 480, svgY: 238 },
-      { cam: 'I-10 at College Dr',    stream: 'br-cam-008', desc: 'Mall of Louisiana area',   svgX: 550, svgY: 237 },
-      { cam: 'I-10 at Essen Ln',      stream: 'br-cam-007', desc: 'Medical corridor',         svgX: 620, svgY: 243 },
-      { cam: 'I-10 at Bluebonnet',    stream: 'br-cam-006', desc: 'Towne Center area',        svgX: 660, svgY: 247 },
-      { cam: 'I-10 at Siegen Ln',     stream: 'br-cam-005', desc: 'SE Baton Rouge',           svgX: 700, svgY: 250 },
-      { cam: 'I-12 at I-10 Split',    stream: 'br-cam-025', desc: 'I-10/I-12 interchange',    svgX: 490, svgY: 235 },
-      { cam: 'I-12 at Airline Hwy',   stream: 'br-cam-026', desc: 'Airline Hwy exit',         svgX: 540, svgY: 190 },
-      { cam: 'I-12 at Jefferson Hwy',  stream: 'br-cam-027', desc: 'Jefferson Hwy area',      svgX: 590, svgY: 165 },
-      { cam: 'I-12 at Sherwood Forest', stream: 'br-cam-028', desc: 'Sherwood Forest exit',   svgX: 650, svgY: 140 },
-      { cam: 'I-12 at O\'Neal Ln',    stream: 'br-cam-029', desc: 'O\'Neal Ln exit',          svgX: 730, svgY: 115 },
-      { cam: 'I-12 at Denham Springs', stream: 'br-cam-030', desc: 'Toward Denham Springs',   svgX: 810, svgY: 97 }
-    ];
+    // Cameras come from the shared map geometry, already projected to the 900x500 viewBox.
+    var CAMERAS = (window.HeroRoads && HeroRoads.CAMERAS) || [];
 
     var container = document.getElementById('cam-hotspots');
     var hero = document.querySelector('.hero');
@@ -906,8 +972,8 @@
       dot.setAttribute('data-cam', cam.cam);
       dot.setAttribute('data-stream', cam.stream);
       dot.setAttribute('data-desc', cam.desc);
-      dot.setAttribute('data-svg-x', cam.svgX);
-      dot.setAttribute('data-svg-y', cam.svgY);
+      dot.setAttribute('data-svg-x', cam.x);
+      dot.setAttribute('data-svg-y', cam.y);
       dot.innerHTML = '<span class="cam-pulse"></span>';
       container.appendChild(dot);
       dots.push(dot);
@@ -1005,7 +1071,6 @@
   </script>
 
   <!-- Traffic Map Backdrop -->
-  <script src="js/roads.js"></script>
   <script src="js/traffic.js"></script>
   <script>
   (function() {
