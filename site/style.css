@@ -81,9 +81,9 @@ img {
 }
 
 .header-inner {
-  max-width: var(--max-width-wide);
-  margin: 0 auto;
-  padding: 0 2rem;
+  max-width: none;
+  margin: 0;
+  padding: 0 40px;
   display: flex;
   align-items: center;
   justify-content: space-between;
@@ -98,8 +98,6 @@ img {
   display: flex;
   align-items: center;
   gap: 0.5rem;
-  position: relative;
-  left: -2rem;
 }
 
 .site-logo:hover {
