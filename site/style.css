@@ -568,37 +568,7 @@ img {
   font-weight: 600;
 }
 
-/* Burn Ban + School Badges */
-.dash-card-stacked {
-  flex-direction: column;
-  gap: 8px;
-}
-.dash-badge-row {
-  display: flex;
-  gap: 8px;
-  width: 100%;
-}
-.dash-badge {
-  display: flex;
-  align-items: center;
-  gap: 8px;
-  flex: 1;
-  padding: 6px 10px;
-  background: rgba(255,255,255,0.08);
-  border-radius: 8px;
-}
-.dash-badge strong {
-  display: block;
-  font-size: 11px;
-  font-weight: 700;
-  color: rgba(255,255,255,0.9);
-  margin-bottom: 0;
-}
-.dash-badge-icon {
-  font-size: 18px;
-  line-height: 1;
-  flex-shrink: 0;
-}
+/* Burn Ban / Schools status text */
 .dash-badge-status {
   font-size: 12px;
   font-weight: 700;
@@ -608,10 +578,49 @@ img {
   background: rgba(239, 68, 68, 0.15);
   border: 1px solid rgba(239, 68, 68, 0.3);
 }
-.dash-links-row {
+
+/* Clickable dashboard card (WBR Schools) */
+.dash-card-clickable { cursor: pointer; transition: border-color 0.15s, background 0.15s; }
+.dash-card-clickable:hover { border-color: rgba(255,255,255,0.28); background: rgba(0,0,0,0.55); }
+.dash-card-clickable:focus-visible { outline: 2px solid var(--color-accent); outline-offset: 2px; }
+.dash-card.has-abnormal { border-color: rgba(245,158,11,0.55); }
+
+/* Rolling-week strip */
+.school-week {
   display: flex;
-  gap: 16px;
+  gap: 4px;
+  margin: 6px 0 4px;
 }
+.school-day {
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 1px;
+  padding: 4px 0 3px;
+  border-radius: 6px;
+  background: rgba(255,255,255,0.08);
+  position: relative;
+}
+.sd-dow { font-size: 10px; font-weight: 700; color: rgba(255,255,255,0.9); line-height: 1; }
+.sd-date { font-size: 10px; color: rgba(255,255,255,0.55); line-height: 1; }
+.school-day.abnormal { cursor: pointer; box-shadow: inset 0 0 0 1px rgba(255,255,255,0.35); }
+/* small marker dot for any non-normal day */
+.school-day.abnormal::after {
+  content: '';
+  position: absolute;
+  top: 2px; right: 2px;
+  width: 4px; height: 4px;
+  border-radius: 50%;
+  background: #fff;
+}
+.school-day.status-early-dismissal { background: rgba(245,158,11,0.40); }
+.school-day.status-field-trip      { background: rgba(59,130,246,0.40); }
+.school-day.status-cancelled       { background: rgba(239,68,68,0.45); }
+.school-day.status-no-school,
+.school-day.status-holiday          { background: rgba(148,163,184,0.30); }
+.school-day.status-summer-break,
+.school-day.status-spring-break     { background: rgba(232,167,53,0.20); }
 
 /* Dashboard responsive */
 @media (max-width: 768px) {
@@ -623,10 +632,6 @@ img {
   .dash-card {
     max-width: 100%;
     width: 100%;
-  }
-  .dash-badge-row {
-    flex-direction: column;
-    gap: 6px;
   }
 }
 

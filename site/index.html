@@ -166,26 +166,24 @@
         </div>
       </div>
 
-      <!-- Burn Ban + School Status -->
-      <div class="dash-card dash-card-stacked">
-        <div class="dash-badge-row">
-          <div class="dash-badge" id="dash-burn">
-            <span class="dash-badge-icon">&#x1F525;</span>
-            <div>
-              <strong>Burn Ban</strong>
-              <span class="dash-badge-status" id="burn-status">Checking...</span>
-            </div>
-          </div>
-          <div class="dash-badge" id="dash-school">
-            <span class="dash-badge-icon">&#x1F3EB;</span>
-            <div>
-              <strong>WBR Schools</strong>
-              <span class="dash-badge-status" id="school-status" style="color:#e8a735;">Summer Break</span>
-            </div>
-          </div>
-        </div>
-        <div class="dash-links-row">
+      <!-- Burn Ban -->
+      <div class="dash-card" id="dash-burn">
+        <div class="dash-icon">&#x1F525;</div>
+        <div class="dash-content">
+          <strong>Burn Ban</strong>
+          <span class="dash-badge-status" id="burn-status">Checking...</span>
           <a href="articles/wbr-burn-ban-status.html" class="quickinfo-link">Burn rules &rarr;</a>
+        </div>
+      </div>
+
+      <!-- WBR Schools — rolling week -->
+      <div class="dash-card dash-card-clickable" id="dash-school"
+           data-href="articles/wbr-school-calendar-2026-2027.html">
+        <div class="dash-icon">&#x1F3EB;</div>
+        <div class="dash-content">
+          <strong>WBR Schools</strong>
+          <span class="dash-badge-status" id="school-status">Loading schedule&hellip;</span>
+          <div class="school-week" id="school-week"></div>
           <a href="articles/wbr-school-calendar-2026-2027.html" class="quickinfo-link">School calendar &rarr;</a>
         </div>
       </div>
@@ -828,6 +826,110 @@
       el.textContent = 'No Active Ban';
       el.style.color = '#22c55e';
     }
+  })();
+  </script>
+
+  <!-- WBR Schools rolling week -->
+  <script>
+  (function() {
+    var DOW = ['Su', 'M', 'T', 'W', 'R', 'F', 'Sa']; // R = Thursday (academic shorthand)
+    var LABELS = {
+      'normal': 'Normal day', 'early-dismissal': 'Early dismissal', 'no-school': 'No school',
+      'cancelled': 'School cancelled', 'field-trip': 'Field trip',
+      'summer-break': 'Summer Break', 'spring-break': 'Spring Break', 'holiday': 'Holiday'
+    };
+    // Disruptions worth flagging — breaks (summer/spring/holiday) are expected, not alerts.
+    var ALERT = { 'early-dismissal': 1, 'no-school': 1, 'cancelled': 1, 'field-trip': 1 };
+    var card = document.getElementById('dash-school');
+    var strip = document.getElementById('school-week');
+    var status = document.getElementById('school-status');
+    if (!card || !strip) return;
+
+    function iso(d) {
+      return d.getFullYear() + '-' + String(d.getMonth() + 1).padStart(2, '0') + '-' + String(d.getDate()).padStart(2, '0');
+    }
+
+    // Next 5 weekdays starting today (rolls daily: Mon=MTWRF, Tue=TWRFM, ...).
+    function rollingWeekdays() {
+      var days = [], d = new Date();
+      d.setHours(0, 0, 0, 0);
+      while (days.length < 5) {
+        var dow = d.getDay();
+        if (dow !== 0 && dow !== 6) days.push(new Date(d));
+        d.setDate(d.getDate() + 1);
+      }
+      return days;
+    }
+
+    function resolve(date, sched) {
+      var key = iso(date);
+      if (sched.days && sched.days[key]) return sched.days[key];
+      var ranges = sched.ranges || [];
+      for (var i = 0; i < ranges.length; i++) {
+        if (key >= ranges[i].start && key <= ranges[i].end) return ranges[i];
+      }
+      return { status: sched.default || 'normal', label: LABELS[sched.default] || 'Normal day' };
+    }
+
+    function render(sched) {
+      var days = rollingWeekdays();
+      var abnormal = 0, firstAbnormal = null;
+      days.forEach(function(date) {
+        var info = resolve(date, sched);
+        var st = info.status || 'normal';
+        var isOff = !!ALERT[st];
+        if (isOff) { abnormal++; if (!firstAbnormal) firstAbnormal = info; }
+
+        var cell = document.createElement('span');
+        cell.className = 'school-day status-' + st + (isOff ? ' abnormal' : '');
+        cell.title = info.label || LABELS[st] || st;
+        var dow = document.createElement('span');
+        dow.className = 'sd-dow';
+        dow.textContent = DOW[date.getDay()];
+        var num = document.createElement('span');
+        num.className = 'sd-date';
+        num.textContent = date.getDate();
+        cell.appendChild(dow);
+        cell.appendChild(num);
+        strip.appendChild(cell);
+      });
+
+      // Summary: a real disruption wins; otherwise a uniform break reads as that break.
+      if (firstAbnormal) {
+        status.textContent = firstAbnormal.label;
+        status.style.color = '#e8a735';
+        card.classList.add('has-abnormal');
+      } else {
+        var s0 = resolve(days[0], sched);
+        var allSame = days.every(function(d) { return resolve(d, sched).status === s0.status; });
+        if (allSame && s0.status !== 'normal') {
+          status.textContent = s0.label;
+          status.style.color = '#e8a735';
+        } else {
+          status.textContent = 'Normal week';
+          status.style.color = '#22c55e';
+        }
+      }
+    }
+
+    function go() {
+      var href = card.getAttribute('data-href');
+      if (href) window.location.href = href;
+    }
+    // Mouse convenience: clicking anywhere on the card follows the calendar link.
+    // Keyboard users tab to the real inner <a>, so the card itself is not focusable.
+    card.addEventListener('click', go);
+    // Inner calendar link navigates on its own; don't double-fire the card.
+    var inner = card.querySelector('a');
+    if (inner) inner.addEventListener('click', function(e) { e.stopPropagation(); });
+
+    fetch('data/school-schedule.json')
+      .then(function(r) { return r.ok ? r.json() : null; })
+      .then(function(sched) {
+        if (!sched) { status.textContent = 'Schedule unavailable'; return; }
+        render(sched);
+      })
+      .catch(function() { status.textContent = 'Schedule unavailable'; });
   })();
   </script>
 

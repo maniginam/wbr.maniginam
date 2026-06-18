@@ -1,0 +1,18 @@
+{
+  "_note": "WBR Parish school schedule. Statuses: normal, early-dismissal, no-school, cancelled, field-trip, summer-break, spring-break, holiday. Resolution: days[date] > ranges > default. Replace example dates with the official WBR calendar.",
+  "default": "normal",
+  "calendarUrl": "articles/wbr-school-calendar-2026-2027.html",
+  "ranges": [
+    { "start": "2026-05-23", "end": "2026-08-09", "status": "summer-break", "label": "Summer Break" },
+    { "start": "2026-12-21", "end": "2027-01-05", "status": "holiday", "label": "Winter Break" },
+    { "start": "2027-03-29", "end": "2027-04-02", "status": "spring-break", "label": "Spring Break" }
+  ],
+  "days": {
+    "2026-09-07": { "status": "no-school", "label": "Labor Day — No School" },
+    "2026-10-15": { "status": "field-trip", "label": "Kindergarten Field Trip — BREC Zoo" },
+    "2026-11-24": { "status": "early-dismissal", "label": "Early Dismissal — Thanksgiving" },
+    "2026-11-25": { "status": "no-school", "label": "Thanksgiving Holiday" },
+    "2026-11-26": { "status": "no-school", "label": "Thanksgiving Holiday" },
+    "2027-01-18": { "status": "no-school", "label": "MLK Day — No School" }
+  }
+}
