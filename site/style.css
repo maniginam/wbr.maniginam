@@ -142,13 +142,16 @@ img {
   text-align: center;
   position: relative;
   overflow: hidden;
+  /* Map (roads + dots) fills the hero; info boxes sit in the bottom corners
+     so the open center keeps its dots hoverable/clickable. */
+  --map-band: 100%;
 }
 
 /* Traffic Map Backdrop */
 .hero-road-layer {
   position: absolute;
   top: 0; left: 0;
-  width: 100%; height: 100%;
+  width: 100%; height: var(--map-band);
   z-index: 0;
   opacity: 0.3;
   pointer-events: none;
@@ -157,7 +160,7 @@ img {
 .hero-traffic-canvas {
   position: absolute;
   top: 0; left: 0;
-  width: 100%; height: 100%;
+  width: 100%; height: var(--map-band);
   z-index: 1;
   opacity: 0.4;
   pointer-events: none;
@@ -167,8 +170,8 @@ img {
 .cam-hotspots {
   position: absolute;
   top: 0; left: 0;
-  width: 100%; height: 100%;
-  z-index: 1;
+  width: 100%; height: var(--map-band);
+  z-index: 5;
   pointer-events: none;
 }
 .cam-dot {
@@ -408,16 +411,26 @@ img {
 }
 .hero-alert-banner .alert-banner-close:hover { opacity: 1; }
 
-.hero-alerts {
+/* Top-left stack: notifications + School schedule */
+.hero-topleft {
   position: absolute;
   top: 16px; left: 16px;
-  z-index: 4;
+  z-index: 6;
+  display: flex;
+  flex-direction: column;
+  align-items: flex-start;
+  gap: 8px;
+  width: 300px;
+  max-width: calc(100% - 32px);
+}
+.hero-alerts {
   display: flex;
   flex-direction: column;
   align-items: flex-start;
   gap: 6px;
-  max-width: 300px;
+  width: 100%;
 }
+.hero-topleft .dash-card { width: 100%; max-width: none; }
 .alert-pill {
   display: inline-flex;
   align-items: center;
@@ -459,15 +472,19 @@ img {
 /* Hero Dashboard */
 .hero-dashboard {
   position: relative;
-  z-index: 2;
+  z-index: 7;           /* above the cam dots, so corner cards sit over them */
   display: flex;
-  justify-content: center;
-  gap: 12px;
-  margin-top: 1.5rem;
-  flex-wrap: wrap;
-  max-width: 900px;
-  margin-left: auto;
-  margin-right: auto;
+  justify-content: space-between;
+  align-items: flex-end;
+  gap: 1.5rem;
+  margin-top: 2rem;
+  width: 100%;
+}
+.hero-dash-group {
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+  max-width: 320px;
 }
 .dash-card {
   display: flex;
@@ -624,10 +641,21 @@ img {
 
 /* Dashboard responsive */
 @media (max-width: 768px) {
+  .hero-topleft {
+    position: static;
+    width: 100%;
+    max-width: 100%;
+    margin: 0 0 1rem;
+    align-items: stretch;
+  }
   .hero-dashboard {
     flex-direction: column;
-    align-items: center;
+    align-items: stretch;
     gap: 8px;
+  }
+  .hero-dash-group {
+    max-width: 100%;
+    align-items: stretch;
   }
   .dash-card {
     max-width: 100%;
@@ -641,7 +669,8 @@ img {
   font-weight: 800;
   letter-spacing: -0.03em;
   line-height: 1.15;
-  margin-bottom: 1rem;
+  margin: 0 auto 1rem;
+  max-width: 640px;
 }
 
 .hero .tagline {

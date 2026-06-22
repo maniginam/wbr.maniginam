@@ -128,12 +128,26 @@
     <div class="hero-weather" id="hero-weather">
       <div class="weather-loading">Loading weather...</div>
     </div>
-    <div class="hero-alerts" id="hero-alerts" aria-live="polite"></div>
+    <div class="hero-topleft">
+      <div class="hero-alerts" id="hero-alerts" aria-live="polite"></div>
+      <!-- WBR Schools — rolling week -->
+      <div class="dash-card dash-card-clickable" id="dash-school"
+           data-href="articles/wbr-school-calendar-2026-2027.html">
+        <div class="dash-icon">&#x1F3EB;</div>
+        <div class="dash-content">
+          <strong>WBR Schools</strong>
+          <span class="dash-badge-status" id="school-status">Loading schedule&hellip;</span>
+          <div class="school-week" id="school-week"></div>
+          <a href="articles/wbr-school-calendar-2026-2027.html" class="quickinfo-link">School calendar &rarr;</a>
+        </div>
+      </div>
+    </div>
     <div class="hero-badge">West Baton Rouge Parish &middot; Port Allen &middot; Brusly &middot; Addis</div>
     <h1>Your Local Guide to West Baton Rouge</h1>
     <p class="tagline">Honest reviews, helpful guides, and community resources for West Baton Rouge Parish. From the best contractors and restaurants to navigating permits and local services &mdash; written by locals, for locals.</p>
 
     <div class="hero-dashboard">
+      <div class="hero-dash-group hero-dash-left">
       <!-- Garbage Schedule -->
       <div class="dash-card">
         <div class="dash-icon">&#x1F5D1;</div>
@@ -165,27 +179,6 @@
           <a href="articles/wbr-flood-stages-river-levels.html" class="quickinfo-link">Flood info &rarr;</a>
         </div>
       </div>
-
-      <!-- Burn Ban -->
-      <div class="dash-card" id="dash-burn">
-        <div class="dash-icon">&#x1F525;</div>
-        <div class="dash-content">
-          <strong>Burn Ban</strong>
-          <span class="dash-badge-status" id="burn-status">Checking...</span>
-          <a href="articles/wbr-burn-ban-status.html" class="quickinfo-link">Burn rules &rarr;</a>
-        </div>
-      </div>
-
-      <!-- WBR Schools — rolling week -->
-      <div class="dash-card dash-card-clickable" id="dash-school"
-           data-href="articles/wbr-school-calendar-2026-2027.html">
-        <div class="dash-icon">&#x1F3EB;</div>
-        <div class="dash-content">
-          <strong>WBR Schools</strong>
-          <span class="dash-badge-status" id="school-status">Loading schedule&hellip;</span>
-          <div class="school-week" id="school-week"></div>
-          <a href="articles/wbr-school-calendar-2026-2027.html" class="quickinfo-link">School calendar &rarr;</a>
-        </div>
       </div>
     </div>
   </section>
@@ -810,22 +803,25 @@
   })();
   </script>
 
-  <!-- Burn Ban Status (default safe, update manually or via scrape) -->
+  <!-- Burn Ban: shows as a notification pill only when in effect -->
   <script>
   (function() {
-    // TODO: Automate via LDAF scrape. For now, default to "No Active Ban"
-    // Set window.WBR_BURN_BAN = true on the page to activate
-    var active = window.WBR_BURN_BAN || false;
-    var el = document.getElementById('burn-status');
-    var badge = document.getElementById('dash-burn');
-    if (active) {
-      el.textContent = 'ACTIVE';
-      el.style.color = '#ef4444';
-      badge.classList.add('dash-badge-alert');
-    } else {
-      el.textContent = 'No Active Ban';
-      el.style.color = '#22c55e';
-    }
+    // TODO: automate via LDAF scrape. Set window.WBR_BURN_BAN = true to activate.
+    if (!window.WBR_BURN_BAN) return;
+    var box = document.getElementById('hero-alerts');
+    if (!box) return;
+    var pill = document.createElement('div');
+    pill.className = 'alert-pill sev-mod';
+    var dot = document.createElement('span');
+    dot.className = 'alert-dot';
+    pill.appendChild(dot);
+    pill.appendChild(document.createTextNode('Burn Ban'));
+    var detail = document.createElement('div');
+    detail.className = 'alert-detail';
+    detail.textContent = 'Burn ban in effect for West Baton Rouge — outdoor burning prohibited. See burn rules.';
+    pill.addEventListener('click', function() { detail.classList.toggle('is-open'); });
+    box.appendChild(pill);
+    box.appendChild(detail);
   })();
   </script>
 
