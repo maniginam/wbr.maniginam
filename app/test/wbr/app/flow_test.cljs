@@ -10,7 +10,7 @@
 (deftest article-index-load-flow
   (async done
          (let [fake-data    #js [#js {:slug "a" :title "Alpha"}]
-               fake-resp    #js {:json (fn [] (js/Promise.resolve fake-data))}
+               fake-resp    #js {:ok true :json (fn [] (js/Promise.resolve fake-data))}
                orig-fetch   js/fetch]
       ;; Stub js/fetch to return a resolved promise with a fake Response
            (set! js/fetch (fn [_url] (js/Promise.resolve fake-resp)))

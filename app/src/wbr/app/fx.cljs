@@ -7,8 +7,14 @@
 
 (rf/reg-fx
  :http
- (fn [{:keys [url on-success]}]
+ (fn [{:keys [url on-success on-failure]}]
    (-> (js/fetch url)
-       (.then #(.json %))
+       (.then (fn [resp]
+                (if (.-ok resp)
+                  (.json resp)
+                  (throw (js/Error. (str "HTTP " (.-status resp)))))))
        (.then #(rf/dispatch (conj on-success (js->clj % :keywordize-keys true))))
-       (.catch #(js/console.error (str "Failed to fetch " url ": " (.-message %)))))))
+       (.catch (fn [err]
+                 (js/console.error (str "Failed to fetch " url ": " (.-message err)))
+                 (when on-failure
+                   (rf/dispatch on-failure)))))))
