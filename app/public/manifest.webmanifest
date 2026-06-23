@@ -1,0 +1,11 @@
+{
+  "name": "WBR Local",
+  "short_name": "WBR Local",
+  "start_url": "/",
+  "display": "standalone",
+  "background_color": "#0c2340",
+  "theme_color": "#0c2340",
+  "icons": [
+    { "src": "/favicon.svg", "sizes": "any", "type": "image/svg+xml" }
+  ]
+}
