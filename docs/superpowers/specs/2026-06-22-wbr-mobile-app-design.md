@@ -87,6 +87,18 @@ Turn WBR Local into a full-blown mobile app (iOS + Android) whose headline value
 - **iOS web-push vs native:** native APNs via Capacitor is the reliable path on iOS; treat PWA web-push as best-effort.
 - **Burn-ban / closures data:** still no clean API (deferred). Manual `announcements` feed covers them until a source exists.
 
+## Agent readiness (isitagentready.com)
+
+Triaged for AWS S3 + CloudFront. We only publish discovery for things that actually exist — advertising non-existent APIs/auth/MCP is dishonest and is deliberately skipped.
+
+- **Link headers (RFC 8288)** — **DONE (2026-06-23):** CloudFront Response Headers Policy `f427e06f-e16b-44bd-9fe9-ca9456629dc3` on distribution `E1GYG7LWHML23S` adds `Link: </sitemap.xml>; rel="sitemap"`. Re-create with `aws cloudfront create-response-headers-policy` if rebuilt.
+- **Content-Signal in robots.txt** — DONE (static `robots.txt` on S3).
+- **Markdown for agents** — **Phase 2:** Lambda@Edge (or CloudFront Function) on viewer request; when `Accept: text/markdown`, serve the article's markdown variant (the SPA content build already emits markdown). Add `Content-Type: text/markdown` (+ `x-markdown-tokens`).
+- **API catalog (RFC 9727)** — **Phase 2, after `/subscribe` exists:** publish `/.well-known/api-catalog` (`application/linkset+json`) listing the real subscribe/push endpoints + a status/health endpoint. Not before — there is nothing to catalog yet.
+- **WebMCP** — **optional, later:** expose *real* tools via `navigator.modelContext.provideContext()` in the SPA (e.g. search-articles, get-active-WBR-alerts). Only with working `execute` callbacks.
+- **DNS-AID** — **optional, later:** SVCB/HTTPS records under `_agents.wbr.maniginam.dev` + DNSSEC, only if/when an agent endpoint exists and DNS is on Route 53.
+- **Skip (no backing reality):** OAuth/OIDC discovery, OAuth Protected Resource, auth.md, MCP Server Card, agent-skills index — the site has no protected APIs, no auth server, no MCP server, and no published skills. Revisit only if those are ever built.
+
 ## Out of scope (this spec)
 
 - Outage map data sourcing, Beacon Connect integration, local-economy data — tracked as later features, specced separately when picked up.
