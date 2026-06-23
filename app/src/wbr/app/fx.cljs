@@ -10,4 +10,5 @@
  (fn [{:keys [url on-success]}]
    (-> (js/fetch url)
        (.then #(.json %))
-       (.then #(rf/dispatch (conj on-success (js->clj % :keywordize-keys true)))))))
+       (.then #(rf/dispatch (conj on-success (js->clj % :keywordize-keys true))))
+       (.catch #(js/console.error (str "Failed to fetch " url ": " (.-message %)))))))
