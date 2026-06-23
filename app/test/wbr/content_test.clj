@@ -19,3 +19,10 @@
 
 (deftest ->article-title-falls-back-to-slug
   (is (= "my-slug" (:title (c/->article "my-slug" "no frontmatter body")))))
+
+(deftest build-index-strips-html-and-sorts
+  (let [arts [{:slug "b" :title "Beta" :category "X" :html "<p>b</p>"}
+              {:slug "a" :title "Alpha" :category "Y" :html "<p>a</p>"}]
+        idx (c/build-index arts)]
+    (is (= ["Alpha" "Beta"] (map :title idx)))
+    (is (not (contains? (first idx) :html)))))

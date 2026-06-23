@@ -1,6 +1,10 @@
 {:paths ["src" "test"]
- :deps {markdown-clj/markdown-clj {:mvn/version "1.12.1"}}
+ :deps {markdown-clj/markdown-clj {:mvn/version "1.12.1"}
+        cheshire/cheshire {:mvn/version "5.13.0"}}
  :tasks {test {:doc "Run content tests"
                :requires ([clojure.test :as t] [wbr.content-test])
                :task (let [{:keys [fail error]} (t/run-tests 'wbr.content-test)]
-                       (System/exit (+ fail error)))}}}
+                       (System/exit (+ fail error)))}
+         content {:doc "Build article JSON from markdown"
+                  :requires ([wbr.content :as c])
+                  :task (println "Wrote" (c/build!) "articles")}}}
