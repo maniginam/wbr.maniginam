@@ -9,6 +9,7 @@
 (rf/reg-event-db :app/init (fn [_ _] db/default-db))
 (rf/reg-event-db :articles/index-loaded index-loaded)
 (rf/reg-event-db :articles/article-loaded article-loaded)
+(rf/reg-event-db :router/navigated (fn [d [_ route]] (assoc d :route route)))
 
 (rf/reg-event-fx
  :articles/load-index
