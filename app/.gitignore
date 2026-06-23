@@ -1,5 +1,6 @@
 node_modules/
 .shadow-cljs/
 public/js/
+public/data/
 out/
 .cpcache/
