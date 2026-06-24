@@ -53,22 +53,15 @@ window.HeroRoads = (function () {
 
   // Camera definitions at real interchange [lon, lat]; exposed projected.
   var CAMERA_DATA = [
-    { cam: 'I-10 at LA 1',          stream: 'br-cam-015', desc: 'Port Allen / Brusly exit', lon: -91.224, lat: 30.452 },
     { cam: 'I-10 at LA 415',        stream: 'br-cam-016', desc: 'Port Allen connector',     lon: -91.263, lat: 30.452 },
-    { cam: 'I-10 at Nicholson Dr',  stream: 'br-cam-014', desc: 'Near LSU',                 lon: -91.186, lat: 30.434 },
-    { cam: 'I-10 at I-110',         stream: 'br-cam-013', desc: 'Downtown BR interchange',  lon: -91.180, lat: 30.447 },
-    { cam: 'I-10 at Washington St', stream: 'br-cam-012', desc: 'Capitol area',             lon: -91.165, lat: 30.433 },
+    { cam: 'I-10 at LA 1',          stream: 'br-cam-015', desc: 'Port Allen / Brusly exit', lon: -91.224, lat: 30.452 },
+    { cam: 'I-10 at I-110',         stream: 'br-cam-013', desc: 'Bridge / downtown',        lon: -91.180, lat: 30.447 },
+    { cam: 'I-10 at Nicholson Dr',  stream: 'br-cam-014', desc: 'East bank / near LSU',     lon: -91.186, lat: 30.434 },
     { cam: 'I-10 at Acadian Thwy',  stream: 'br-cam-010', desc: 'Mid-city Baton Rouge',     lon: -91.155, lat: 30.427 },
     { cam: 'I-10 at College Dr',    stream: 'br-cam-008', desc: 'Mall of Louisiana area',   lon: -91.133, lat: 30.420 },
-    { cam: 'I-10 at Essen Ln',      stream: 'br-cam-007', desc: 'Medical corridor',         lon: -91.103, lat: 30.406 },
-    { cam: 'I-10 at Bluebonnet',    stream: 'br-cam-006', desc: 'Towne Center area',        lon: -91.083, lat: 30.394 },
-    { cam: 'I-10 at Siegen Ln',     stream: 'br-cam-005', desc: 'SE Baton Rouge',           lon: -91.052, lat: 30.383 },
     { cam: 'I-12 at I-10 Split',    stream: 'br-cam-025', desc: 'I-10/I-12 interchange',    lon: -91.020, lat: 30.379 },
     { cam: 'I-12 at Airline Hwy',   stream: 'br-cam-026', desc: 'Airline Hwy exit',         lon: -90.998, lat: 30.405 },
-    { cam: 'I-12 at Jefferson Hwy', stream: 'br-cam-027', desc: 'Jefferson Hwy area',       lon: -90.978, lat: 30.418 },
-    { cam: 'I-12 at Sherwood Forest', stream: 'br-cam-028', desc: 'Sherwood Forest exit',   lon: -90.955, lat: 30.430 },
-    { cam: 'I-12 at O\'Neal Ln',    stream: 'br-cam-029', desc: 'O\'Neal Ln exit',          lon: -90.925, lat: 30.445 },
-    { cam: 'I-12 at Denham Springs', stream: 'br-cam-030', desc: 'Toward Denham Springs',   lon: -90.885, lat: 30.460 }
+    { cam: 'I-12 at Sherwood Forest', stream: 'br-cam-028', desc: 'Sherwood Forest exit',   lon: -90.955, lat: 30.430 }
   ];
 
   // Catmull-Rom spline through points -> smooth SVG cubic path.
