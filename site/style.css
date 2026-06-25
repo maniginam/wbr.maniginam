@@ -1304,6 +1304,14 @@ img {
   position: relative;
 }
 
+/* Homepage subscribe section */
+.home-subscribe-section {
+  padding: 2.5rem 1.5rem 3rem;
+  display: flex;
+  justify-content: center;
+}
+.home-subscribe-section .email-capture { max-width: 620px; width: 100%; }
+
 /* Spam honeypot — hidden from humans, tempting to bots */
 .email-capture-hp {
   position: absolute;

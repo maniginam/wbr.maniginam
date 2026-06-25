@@ -10,7 +10,7 @@
     popupDelay: 30000,
     scrollThreshold: 0.5,
     storageKey: 'wbr_local_email_capture',
-    endpoint: '/api/subscribe'
+    endpoint: 'https://4eu5pt6bu9.execute-api.us-west-2.amazonaws.com'
   };
 
   function hasDismissed(type) {
@@ -48,21 +48,21 @@
     } catch(e) {}
   }
 
-  function createForm(id, extraClass) {
+  function createForm(id, extraClass, title, desc, btn) {
     var box = document.createElement('div');
     box.className = 'email-capture ' + extraClass;
     box.id = id;
     box.innerHTML =
       '<div class="email-capture-icon">\uD83C\uDFE1</div>' +
-      '<h3 class="email-capture-title">' + CONFIG.leadMagnet + '</h3>' +
-      '<p class="email-capture-desc">' + CONFIG.ctaText + '</p>' +
+      '<h3 class="email-capture-title">' + (title || CONFIG.leadMagnet) + '</h3>' +
+      '<p class="email-capture-desc">' + (desc || CONFIG.ctaText) + '</p>' +
       '<form class="email-capture-form" action="' + CONFIG.endpoint + '" method="POST">' +
         '<input type="text" name="company" class="email-capture-hp" tabindex="-1" autocomplete="off" aria-hidden="true">' +
         '<div class="email-capture-fields">' +
           '<input type="text" name="name" placeholder="First name" required class="email-capture-input">' +
           '<input type="email" name="email" placeholder="Email address" required class="email-capture-input">' +
         '</div>' +
-        '<button type="submit" class="email-capture-btn">' + CONFIG.buttonText + '</button>' +
+        '<button type="submit" class="email-capture-btn">' + (btn || CONFIG.buttonText) + '</button>' +
         '<p class="email-capture-privacy">No spam, ever. Unsubscribe anytime.</p>' +
       '</form>' +
       '<div class="email-capture-success" style="display:none;">' +
@@ -149,10 +149,23 @@
   }
 
   function init() {
+    if (hasSubscribed()) return;
+
+    // Homepage: a standalone "new articles" subscribe box.
+    var homeTarget = document.getElementById('home-subscribe');
+    if (homeTarget) {
+      var homeForm = createForm(
+        'email-capture-home', 'email-capture-inline',
+        'Get New WBR Articles by Email',
+        'New local guides and West Baton Rouge updates, straight to your inbox.',
+        'Subscribe'
+      );
+      homeTarget.appendChild(homeForm);
+      attachFormHandler(homeForm);
+    }
+
     var content = document.querySelector('.article-content');
     if (!content) return;
-
-    if (hasSubscribed()) return;
 
     var h2s = content.querySelectorAll('h2');
     if (h2s.length >= 2) {
